@@ -33,6 +33,9 @@ const LoginForm = (): JSX.Element => {
     const handleEmailOnChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const email = event.target.value;
         setEmailField(email);
+        if (!isEmailFormatValid(emailField)) {
+            setIsEmailError(true);
+        }
     }
 
     const handleLoginClick = () => {
@@ -104,7 +107,7 @@ const LoginScreen = (): JSX.Element => {
 
     return (
         <>
-            <Paper sx={{ display: 'flex', flexDirection: "column", width: 400, maxWidth: '100%', margin: 'auto', p: 5 }}  elevation={4}>
+            <Paper sx={{ display: 'flex', flexDirection: "column", width: 400, maxWidth: '100%', margin: 'auto', p: 5 }} elevation={4}>
                 <LoginForm />
             </Paper>
         </>

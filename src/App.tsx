@@ -1,25 +1,21 @@
-import { EventForm, EventScreen } from './admin/eventForm'
-import DataTable from './admin/eventTable'
-import { SessionScreen } from './admin/sessionForm'
-import './App.css'
-import LoginScreen from './auth/loginScreen'
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import Header from "./root/header";
+import Footer from "./root/footer";
+import { Box } from '@mui/material';
 
-function App() {
+const RootLayout: React.FC = () => {
   return (
-    <>
-      {/* <LoginScreen /> */}
-      <DataTable/>
-      {/* Sample of using GenericDialog (Can be wrapped) */}
-      {/* <GenericDialog
-        trigger={<Button variant="contained" color="primary">Otwórz Ustawienia Lokalizacji</Button>}
-        title="Użycie Usług Lokalizacyjnych"
-        content="Czy zezwalasz na anonimowe wysyłanie danych o lokalizacji do Google?"
-        onConfirm={handleLocationConfirmation}
-      /> */}
-      {/* <EventScreen/> */}
-      {/* <SessionScreen /> */}
-    </>
-  )
-}
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Header />
 
-export default App
+      <Box component="main" sx={{ flexGrow: 1 }}>
+        <Outlet />
+      </Box>
+
+      <Footer />
+    </Box>
+  );
+};
+
+export default RootLayout;
