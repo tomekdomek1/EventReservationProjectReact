@@ -8,6 +8,7 @@ import { createTheme } from '@mui/material'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import DataTable from './admin/eventTable'
 import LoginScreen from './auth/loginScreen'
+import NotFoundPage from './pages/notFoundPage'
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,8 @@ const router = createBrowserRouter([
       { path: '/login', element: <LoginScreen /> },
       { path: '/admin/events', element: <DataTable /> }
     ]
-  }
+  },
+  { path: '*', element: <NotFoundPage /> }
 ]);
 
 const darkTheme = createTheme({
