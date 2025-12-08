@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import type { CreateEventForm } from './createEventForm';
 import GenericDialog from '../components/GenericDialog';
 import EventForm from './eventForm';
-import GetEvents from '../mockData/getEvents';
+import GetEvents from '../mockData/getEventsNew';
 
 
 const eventColumn: GridColDef[] = [
@@ -83,7 +83,7 @@ const paginationModel = { page: 0, pageSize: 5 };
 
 export default function DataTable() {
     return (
-        <Paper sx={{ display: 'flex', flexDirection: "column", width: "auto", maxWidth: '100%', margin: 'auto', p: 5 }} elevation={4}>
+        <Box sx={{ display: 'flex', flexDirection: "column", width: "auto", maxWidth: '100%', margin: 'auto', p: 5 }}>
             <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", alignItems: 'center', mb: 2 }}>
                 <Typography variant='h5'>Event list</Typography>
                 <GenericDialog
@@ -111,6 +111,6 @@ export default function DataTable() {
                 sx={{ border: 0 }}
                 showToolbar
             />
-        </Paper>
+        </Box>
     );
 }
