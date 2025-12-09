@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import type { Event } from "../types/Event";
+import type { EventData } from "../types/Event";
 
 const strings = [{
     "id": 50770,
@@ -132,12 +132,12 @@ const strings = [{
     "coordinatorPhone": "843.598.8755 x221"
 }]
 
-export default function GetEvents(): Event[] {
+export default function GetEvents(): EventData[] {
 
     return strings.map(s => ({
         ...s,
         // id: s.id as number,
         startTime: dayjs(s.startTime),
         endTime: dayjs(s.endTime)
-    })) as Event[];
+    })) as EventData[];
 }

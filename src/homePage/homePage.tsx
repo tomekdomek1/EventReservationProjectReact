@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Container, Typography } from '@mui/material';
 import EventList from './events/EventList';
 import GetEvents from '../mockData/getEventsNew';
-import type { Event } from '../types/Event';
+import type { EventData } from '../types/Event';
 import EventDetailsModal from './events/EventDetailsModal';
 
 interface HomePageProps { };
 
 const HomePage: React.FC<HomePageProps> = () => {
-    const [events, setEvents] = useState<Event[]>([]);
+    const [events, setEvents] = useState<EventData[]>([]);
 
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 

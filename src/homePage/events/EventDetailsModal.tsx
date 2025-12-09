@@ -12,10 +12,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
-import type { Event } from '../../types/Event';
+import type { EventData } from '../../types/Event';
 
 interface EventDetailsModalProps {
-    event: Event | null;
+    event: EventData | null;
     open: boolean;
     onClose: () => void;
 }

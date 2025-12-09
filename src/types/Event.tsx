@@ -1,6 +1,6 @@
 import { Dayjs } from "dayjs";
 
-export interface Event {
+export interface EventData {
     id: number;
     name: string;
     description: string;

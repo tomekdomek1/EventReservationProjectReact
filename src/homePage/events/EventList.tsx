@@ -1,10 +1,10 @@
 import React from 'react';
 import { Grid, Box } from '@mui/material';
 import EventCard from './EventCard';
-import type { Event } from '../../types/Event';
+import type { EventData } from '../../types/Event';
 
 interface EventListProps {
-    events: Event[];
+    events: EventData[];
     onSelectEvent: (id: number) => void;
 }
 

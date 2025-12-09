@@ -2,10 +2,10 @@ import React from 'react';
 import { Card, CardContent, Typography, CardActionArea, Box } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import type { Event } from '../../types/Event';
+import type { EventData } from '../../types/Event';
 
 interface EventCardProps {
-    event: Event;
+    event: EventData;
     onClick: (id: number) => void;
 }
 
