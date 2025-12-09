@@ -13,9 +13,11 @@ import type { CreateEventForm } from "./createEventForm";
 type EventFormProps = {
     readonly?: boolean;
     initialData?: CreateEventForm;
+    onDialogClose?: () => void;
 };
 
-export const EventForm = ({ readonly = false, initialData }: EventFormProps): JSX.Element => {
+
+export const EventForm = ({ readonly = false, initialData, onDialogClose }: EventFormProps): JSX.Element => {
 
     const formContext = useForm<CreateEventForm>({
         defaultValues: initialData ?? {
@@ -25,7 +27,9 @@ export const EventForm = ({ readonly = false, initialData }: EventFormProps): JS
 
     const onSubmit = (data: CreateEventForm) => {
         console.log("FORM DATA:", data);
+        onDialogClose?.();   // zamykanie dialogu po submit
     };
+
 
     return (
         <FormContainer formContext={formContext} onSuccess={onSubmit}>
@@ -154,9 +158,16 @@ export const EventForm = ({ readonly = false, initialData }: EventFormProps): JS
                         disabled={readonly}
                     />
                 </Box>
-                {readonly === false ? (<Button variant="contained" type="submit">
-                    {initialData ? "Save changes" : "Add"}
-                </Button>) : ''}
+                {!readonly && (
+                    <Button variant="contained" type="submit">
+                        {(() => {
+                            if (initialData) {
+                                return "Edit";
+                            }
+                            return "Add";
+                        })()}
+                    </Button>
+                )}
             </Box>
         </FormContainer>
     )

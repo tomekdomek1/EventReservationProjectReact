@@ -1,29 +1,39 @@
 import { type JSX } from "react";
-
-import { Box, Button, Paper, Typography } from "@mui/material"
-
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
-import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui'
+import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { DateTimePickerElement } from "react-hook-form-mui/date-pickers";
-import type { CreateSessionForm } from "./CreateSessionForm";
+import type { EventSession } from "./eventsSessionTable";
 
+type SessionFormProps = {
+    readonly?: boolean;
+    initialData?: EventSession;
+    onDialogClose?: () => void;
+};
 
+export const SessionForm = ({ readonly = false, initialData, onDialogClose }: SessionFormProps): JSX.Element => {
+    const formContext = useForm<EventSession>({
+        defaultValues: initialData || {},
+    });
 
-const SessionForm = (readonly: boolean = false): JSX.Element => {
-
-    const formContext = useForm<CreateSessionForm>({});
-
-
-    const onSubmit = (data: CreateSessionForm) => {
+    const onSubmit = (data: EventSession) => {
         console.log("FORM DATA:", data);
+        onDialogClose?.();
     };
 
     return (
         <FormContainer formContext={formContext} onSuccess={onSubmit}>
             <Typography variant="h5" sx={{ textAlign: 'left', marginBottom: "25px" }}>
-                Create Session
+                {(() => {
+                    if (initialData && readonly) {
+                        return "Session details";
+                    }
+                    if (initialData) {
+                        return "Edit session";
+                    }
+                    return "Create session";
+                })()}
             </Typography>
 
             <Box sx={{ display: 'flex', flexDirection: "column", gap: 3 }}>
@@ -33,7 +43,7 @@ const SessionForm = (readonly: boolean = false): JSX.Element => {
                     name="name"
                     required
                     fullWidth
-                    placeholder="Event name"
+                    placeholder="session name"
                     disabled={readonly}
                 />
 
@@ -60,6 +70,7 @@ const SessionForm = (readonly: boolean = false): JSX.Element => {
                         disabled={readonly}
                     />
                 </LocalizationProvider>
+
                 <TextFieldElement
                     id="duration-input"
                     label="Duration"
@@ -70,6 +81,7 @@ const SessionForm = (readonly: boolean = false): JSX.Element => {
                     placeholder="Session duration"
                     disabled={readonly}
                 />
+
                 <TextFieldElement
                     id="maxParticipants-input"
                     label="Max participants"
@@ -80,9 +92,29 @@ const SessionForm = (readonly: boolean = false): JSX.Element => {
                     placeholder="Session max participants"
                     disabled={readonly}
                 />
-                <Button variant="contained" type="submit">
-                    Add
-                </Button>
+
+                {readonly &&
+                    <TextFieldElement
+                        id="currentReserved-input"
+                        label="Current reserved"
+                        name="currentReserved"
+                        required
+                        fullWidth
+                        type="number"
+                        placeholder={readonly !== true && initialData === undefined ? "" : ""}
+                        disabled={readonly}
+                    />
+                }
+                {!readonly && (
+                    <Button variant="contained" type="submit">
+                        {(() => {
+                            if (initialData) {
+                                return "Edit";
+                            }
+                            return "Add";
+                        })()}
+                    </Button>
+                )}
             </Box>
         </FormContainer>
     )
@@ -94,7 +126,10 @@ export const SessionScreen = (): JSX.Element => {
             sx={{ display: 'flex', flexDirection: "column", width: 700, maxWidth: '100%', margin: 'auto', p: 5 }}
             elevation={4}
         >
-            <SessionForm />
+            <SessionForm
+                readonly={false}
+                onDialogClose={() => console.log("Dialog closed")}
+            />
         </Paper>
     )
 }

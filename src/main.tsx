@@ -4,10 +4,11 @@ import './index.css'
 import RouteLayout from './App'
 import HomePage from './homePage/HomePage'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import DataTable from './admin/eventTable'
+import DataTable from './admin/Event/eventTable'
 import LoginScreen from './auth/loginScreen'
 import NotFoundPage from './pages/notFoundPage'
 import { ThemeModeProvider } from './theme/themeModeProvider'
+import EventsSessionsTable from './admin/Session/eventsSessionTable'
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,9 @@ const router = createBrowserRouter([
       { path: '/', element: <HomePage /> },
       { path: '/login', element: <LoginScreen /> },
       { path: '/admin/events', element: <DataTable /> },
+      { path: 'admin/events/:id', element: <EventsSessionsTable/> },
       { path: '*', element: <NotFoundPage /> }
+      
     ]
   }
 ]);

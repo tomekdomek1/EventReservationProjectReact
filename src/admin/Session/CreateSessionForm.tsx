@@ -4,6 +4,6 @@ export interface CreateSessionForm {
     name: string,
     description: string,
     startTime: Dayjs,
-    durationInMinutes: number,
+    duration: number,
     maxParticipants: number;
 }

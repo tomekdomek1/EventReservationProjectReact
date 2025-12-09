@@ -12,7 +12,7 @@ interface GenericDialogProps {
 
 }
 
-export function GenericDialog({
+export default function GenericDialog({
     trigger,
     title,
     content,
@@ -23,59 +23,45 @@ export function GenericDialog({
 }: GenericDialogProps) {
     const [open, setOpen] = React.useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
+    const handleClickOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const handleConfirm = () => {
-        if (onConfirm) {
-            onConfirm();
-        }
+        onConfirm?.();
         handleClose();
     };
 
-    const dialogTrigger = React.cloneElement(trigger, {
-        onClick: handleClickOpen,
-    });
+    const dialogTrigger = React.cloneElement(trigger, { onClick: handleClickOpen });
+
+    // jeśli content jest React elementem → wstrzykujemy mu callback
+    const dialogContent = React.isValidElement(content)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ? React.cloneElement(content as any, { onDialogClose: handleClose })
+        : content;
 
     return (
-        <React.Fragment>
+        <>
             {dialogTrigger}
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="generic-dialog-title"
-                aria-describedby="generic-dialog-description"
-            >
-                {title && (
-                    <DialogTitle id="generic-dialog-title">
-                        {title}
-                    </DialogTitle>
-                )}
+            <Dialog open={open} onClose={handleClose} fullWidth>
+                {title && <DialogTitle>{title}</DialogTitle>}
                 <DialogContent>
-                    <DialogContentText id="generic-dialog-description">
-                        {content}
-                    </DialogContentText>
+                    {typeof dialogContent === 'string' ?    
+                        <DialogContentText>
+                            {dialogContent}
+                        </DialogContentText> :
+                        <div>
+                            {dialogContent}
+                        </div>
+                    }
                 </DialogContent>
-                {
-                    hideActions === false ? (
-                        <DialogActions>
-                            <Button onClick={handleClose} autoFocus>
-                                {cancelText}
-                            </Button>
-                            <Button onClick={handleConfirm}>
-                                {confirmText}
-                            </Button>
-                        </DialogActions>
-                    ) : ''
-                }
+
+                {!hideActions && (
+                    <DialogActions>
+                        <Button onClick={handleClose}>{cancelText}</Button>
+                        <Button onClick={handleConfirm}>{confirmText}</Button>
+                    </DialogActions>
+                )}
             </Dialog>
-        </React.Fragment>
+        </>
     );
 }
-
-export default GenericDialog;
