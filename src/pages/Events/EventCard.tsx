@@ -15,10 +15,30 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
     };
 
     return (
-        <Card sx={{ height: '100%' }}>
-            <CardActionArea onClick={handleClick}>
-                <CardContent>
-                    <Typography variant="h5" component="div" gutterBottom>
+        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <CardActionArea
+                onClick={handleClick}
+                sx={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-start',
+                    alignItems: 'stretch'
+                }}
+            >
+                <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                    <Typography
+                        variant="h5"
+                        component="div"
+                        gutterBottom
+                        sx={{
+                            display: '-webkit-box',
+                            overflow: 'hidden',
+                            WebkitBoxOrient: 'vertical',
+                            WebkitLineClamp: 2, // Limit title to 2 lines
+                            minHeight: '3.2em', // Fixed height for 2 lines
+                        }}
+                    >
                         {event.name}
                     </Typography>
 
@@ -26,18 +46,29 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
                         {event.description}
                     </Typography>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <CalendarTodayIcon sx={{ mr: 1, fontSize: 18 }} color="primary" />
-                        <Typography variant="body2">
-                            {event.startTime.format('MMM DD, YYYY [at] HH:mm')}
-                        </Typography>
-                    </Box>
+                    <Box sx={{ marginTop: 'auto' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                            <CalendarTodayIcon sx={{ mr: 1, fontSize: 18 }} color="primary" />
+                            <Typography variant="body2">
+                                {event.startTime.format('MMM DD, YYYY [at] HH:mm')}
+                            </Typography>
+                        </Box>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <LocationOnIcon sx={{ mr: 1, fontSize: 18 }} color="action" />
-                        <Typography variant="body2">
-                            {event.location}
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                            <LocationOnIcon sx={{ mr: 1, fontSize: 18, mt: 0.3 }} color="action" />
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    display: '-webkit-box',
+                                    overflow: 'hidden',
+                                    WebkitBoxOrient: 'vertical',
+                                    WebkitLineClamp: 2, // Limit location to 2 lines
+                                    minHeight: '3em', // Reserve space for location
+                                }}
+                            >
+                                {event.location}
+                            </Typography>
+                        </Box>
                     </Box>
                 </CardContent>
             </CardActionArea>
