@@ -7,11 +7,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 
-import GenericDialog from '../../components/GenericDialog';
-import EventForm from './eventForm';
-import GetEvents from '../../mockData/getEventsNew';
+import GenericDialog from '../../../components/common/GenericDialog';
+import dayjs from 'dayjs';
+import GetEvents from '../../../services/getEventsNew';
 import { useNavigate } from 'react-router-dom';
-import type { EventData } from '../../types/Event';
+import type { EventData } from '../../../types/Event';
 
 
 
@@ -22,7 +22,7 @@ const paginationModel = { page: 0, pageSize: 5 };
 
 
 
-export default function DataTable() {
+export default function EventTable() {
     const navigate = useNavigate();
     const eventColumn: GridColDef[] = [
         { field: 'id', headerName: "ID", flex: 0.5, minWidth: 70 },

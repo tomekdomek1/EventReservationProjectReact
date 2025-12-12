@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Header from "./root/header";
-import Footer from "./root/footer";
+import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
 import { Box } from '@mui/material';
 
 const RootLayout: React.FC = () => {

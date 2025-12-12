@@ -8,7 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { FormContainer, TextFieldElement, SwitchElement, useForm } from 'react-hook-form-mui'
 import { DateTimePickerElement } from "react-hook-form-mui/date-pickers";
 
-import type { CreateEventForm } from "./createEventForm";
+import type { CreateEventForm } from "./CreateEventForm";
 
 type EventFormProps = {
     readonly?: boolean;

@@ -4,7 +4,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { FormContainer, TextFieldElement, useForm } from 'react-hook-form-mui';
 import { DateTimePickerElement } from "react-hook-form-mui/date-pickers";
-import type { EventSession } from "./eventsSessionTable";
+import type { EventSession } from "./EventsSessionTable";
 
 type SessionFormProps = {
     readonly?: boolean;

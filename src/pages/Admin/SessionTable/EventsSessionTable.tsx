@@ -7,10 +7,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'
 import PeopleIcon from '@mui/icons-material/People';
 
-import GenericDialog from '../../components/GenericDialog';
+import GenericDialog from '../../../components/common/GenericDialog';
 import dayjs, { Dayjs } from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
-import { SessionForm } from './sessionForm';
+import { SessionForm } from './SessionForm';
 
 
 export interface EventSession {
@@ -130,44 +130,44 @@ export default function EventsSessionsTable() {
                             confirmText="Delete"
                             cancelText="Cancel"
                         />
-                         <IconButton onClick={() => navigate(`${thisRow.id}`)}>
+                        <IconButton onClick={() => navigate(`${thisRow.id}`)}>
                             <PeopleIcon />
                         </IconButton>
                     </div >
                 );
-},
+            },
         },
     ];
 
-return (
-    <Box sx={{ display: 'flex', flexDirection: "column", width: "auto", maxWidth: '100%', margin: 'auto', p: 5 }}>
-        <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", alignItems: 'center', mb: 2 }}>
-            <Typography variant='h5'>Event's session list</Typography>
-            <GenericDialog
-                trigger={<IconButton>
-                    <AddCircleOutlineIcon />
-                </IconButton>}
-                content={<SessionForm />}
-                onConfirm={() => {
-                    alert("Created!")
+    return (
+        <Box sx={{ display: 'flex', flexDirection: "column", width: "auto", maxWidth: '100%', margin: 'auto', p: 5 }}>
+            <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", alignItems: 'center', mb: 2 }}>
+                <Typography variant='h5'>Event's session list</Typography>
+                <GenericDialog
+                    trigger={<IconButton>
+                        <AddCircleOutlineIcon />
+                    </IconButton>}
+                    content={<SessionForm />}
+                    onConfirm={() => {
+                        alert("Created!")
+                    }}
+                    hideActions
+                />
+            </Box>
+            <Divider />
+            <DataGrid
+                rows={rows}
+                columns={eventColumn}
+                initialState={{ pagination: { paginationModel } }}
+                pageSizeOptions={[5, 10]}
+                checkboxSelection={false}
+                onPaginationModelChange={(model, details) => {
+                    //on pagination fetch data
                 }}
-                hideActions
+                rowSelection={false}
+                sx={{ border: 0 }}
+                showToolbar
             />
         </Box>
-        <Divider />
-        <DataGrid
-            rows={rows}
-            columns={eventColumn}
-            initialState={{ pagination: { paginationModel } }}
-            pageSizeOptions={[5, 10]}
-            checkboxSelection={false}
-            onPaginationModelChange={(model, details) => {
-                //on pagination fetch data
-            }}
-            rowSelection={false}
-            sx={{ border: 0 }}
-            showToolbar
-        />
-    </Box>
-);
+    );
 }

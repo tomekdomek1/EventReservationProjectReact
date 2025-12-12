@@ -1,14 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import RouteLayout from './App'
-import HomePage from './homePage/HomePage'
+import RouteLayout from './components/layout/RootLayout/RootLayout'
+import HomePage from './pages/Events/EventsPage'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import DataTable from './admin/Event/eventTable'
-import LoginScreen from './auth/loginScreen'
-import NotFoundPage from './pages/notFoundPage'
-import { ThemeModeProvider } from './theme/themeModeProvider'
-import EventsSessionsTable from './admin/Session/eventsSessionTable'
+import EventTable from './pages/Admin/EventTable/EventTable'
+import LoginScreen from './pages/Auth/LoginPage'
+import NotFoundPage from './pages/NotFoundPage'
+import { ThemeModeProvider } from './theme/ThemeModeProvider'
+import EventsSessionsTable from './pages/Admin/SessionTable/EventsSessionTable'
 
 const router = createBrowserRouter([
   {
@@ -16,10 +16,10 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <HomePage /> },
       { path: '/login', element: <LoginScreen /> },
-      { path: '/admin/events', element: <DataTable /> },
-      { path: 'admin/events/:id', element: <EventsSessionsTable/> },
+      { path: '/admin/events', element: <EventTable /> },
+      { path: 'admin/events/:id', element: <EventsSessionsTable /> },
       { path: '*', element: <NotFoundPage /> }
-      
+
     ]
   }
 ]);

@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import type { CreateEventForm } from "../admin/Event/createEventForm";
+import type { CreateEventForm } from "../pages/Admin/EventTable/CreateEventForm";
 import type { EventData } from "../types/Event";
 
 

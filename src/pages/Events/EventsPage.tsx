@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography } from '@mui/material';
-import EventList from './events/EventList';
-import GetEvents from '../mockData/getEventsNew';
-import type { EventData } from '../types/Event';
-import EventDetailsModal from './events/EventDetailsModal';
+import EventList from './EventList';
+import GetEvents from '../../services/getEventsNew';
+import type { EventData } from '../../types/Event';
+import EventDetailsModal from './EventDetailsModal';
 
 interface HomePageProps { };
 

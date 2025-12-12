@@ -4,7 +4,7 @@ import { AppBar, Toolbar, IconButton, Button, Box, Typography } from '@mui/mater
 import HomeIcon from '@mui/icons-material/Home';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import { useThemeStore } from '../store/themeStore';
+import { useThemeStore } from '../../../store/themeStore';
 
 type HeaderProps = {};
 
