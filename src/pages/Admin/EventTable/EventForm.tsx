@@ -14,10 +14,11 @@ type EventFormProps = {
     readonly?: boolean;
     initialData?: CreateEventForm;
     onDialogClose?: () => void;
+    onSubmit?: (data: CreateEventForm) => Promise<void>;
 };
 
 
-export const EventForm = ({ readonly = false, initialData, onDialogClose }: EventFormProps): JSX.Element => {
+export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubmit: parentSubmit }: EventFormProps): JSX.Element => {
 
     const formContext = useForm<CreateEventForm>({
         defaultValues: initialData ?? {
@@ -25,8 +26,10 @@ export const EventForm = ({ readonly = false, initialData, onDialogClose }: Even
         },
     });
 
-    const onSubmit = (data: CreateEventForm) => {
-        console.log("FORM DATA:", data);
+    const onSubmit = async (data: CreateEventForm) => {
+        if (parentSubmit) {
+            await parentSubmit(data);
+        }
         onDialogClose?.();   // zamykanie dialogu po submit
     };
 

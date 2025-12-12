@@ -1,5 +1,5 @@
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Divider, IconButton, Typography } from '@mui/material';
+import { DataGrid, type GridColDef, type GridPaginationModel } from '@mui/x-data-grid';
+import { Box, Divider, IconButton, Typography, Alert } from '@mui/material';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InfoIcon from '@mui/icons-material/Info';
@@ -7,28 +7,57 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 
+import React from 'react';
 import GenericDialog from '../../../components/common/GenericDialog';
-import dayjs from 'dayjs';
-import GetEvents from '../../../services/getEventsNew';
-import { useNavigate } from 'react-router-dom';
-import type { EventData } from '../../../types/Event';
-
-
-
-//Mock - should be replaced with fetching service with pagination. Fetch model will change due to pagination model at backend
-const rows = GetEvents();
-
-const paginationModel = { page: 0, pageSize: 5 };
-
-
+import EventForm from './EventForm';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import type { EventData, PaginatedResponse } from '../../../types/Event';
+import useSWR, { useSWRConfig } from 'swr';
+import { fetcher, createEvent, deleteEvent } from '../../../services/api';
 
 export default function EventTable() {
     const navigate = useNavigate();
+
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const { mutate } = useSWRConfig();
+
+    const paginationModel = {
+        page: parseInt(searchParams.get('page') || '0', 10), // Mui GridPaginationModel index starts at 0
+        pageSize: parseInt(searchParams.get('pageSize') || '5', 10)
+    };
+
+    const { data: eventResponse, error, isLoading } = useSWR<PaginatedResponse<EventData>>(
+        `/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`, // API's page starts at 1
+        fetcher,
+        {
+            keepPreviousData: true,
+        }
+    );
+
+    const handlePaginationModelChange = (newModel: GridPaginationModel) => {
+        setSearchParams({
+            page: newModel.page.toString(),
+            pageSize: newModel.pageSize.toString()
+        });
+    };
+
+    const handleCreateEvent = async (data: any) => {
+        await createEvent(data);
+        mutate(`/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`);
+        // alert("Event created successfully!");
+    };
+
+    const handleDelete = async (id: number) => {
+        await deleteEvent(id);
+        mutate(`/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`);
+    };
+
     const eventColumn: GridColDef[] = [
         { field: 'id', headerName: "ID", flex: 0.5, minWidth: 70 },
         { field: 'name', headerName: "Name", flex: 1.5, minWidth: 150 },
-        { field: 'startTime', headerName: "Start date", flex: 1, minWidth: 120 },
-        { field: 'endTime', headerName: "End Date", flex: 1, minWidth: 120 },
+        { field: 'startTime', headerName: "Start date", flex: 1, minWidth: 120, valueFormatter: (value: any) => value?.format('DD/MM/YYYY HH:mm') },
+        { field: 'endTime', headerName: "End Date", flex: 1, minWidth: 120, valueFormatter: (value: any) => value?.format('DD/MM/YYYY HH:mm') },
         { field: 'location', headerName: "Location", flex: 1, minWidth: 500 },
         {
             field: "action",
@@ -62,7 +91,7 @@ export default function EventTable() {
                             trigger={<IconButton onClick={onClick}><DeleteIcon /></IconButton>}
                             title={"Are you sure?"}
                             content={"Do you want delete this event? It cannot be reverted."}
-                            onConfirm={() => alert(JSON.stringify(thisRow, null, 4))}
+                            onConfirm={() => handleDelete(thisRow.id)}
                             confirmText='Delete'
                             cancelText='Cancel'
                         />
@@ -75,7 +104,13 @@ export default function EventTable() {
         },
     ]
 
-
+    if (error) {
+        return (
+            <Box sx={{ p: 5 }}>
+                <Alert severity="error">Failed to load events.</Alert>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ display: 'flex', flexDirection: "column", width: "auto", maxWidth: '100%', margin: 'auto', p: 5 }}>
@@ -85,7 +120,7 @@ export default function EventTable() {
                     trigger={<IconButton>
                         <AddCircleOutlineIcon />
                     </IconButton>}
-                    content={<EventForm />}
+                    content={<EventForm onSubmit={handleCreateEvent} />}
                     onConfirm={() => {
                         alert("Created!")
                     }}
@@ -94,14 +129,21 @@ export default function EventTable() {
             </Box>
             <Divider />
             <DataGrid
-                rows={rows}
+                // Data
+                rows={eventResponse?.items || []}
+                rowCount={eventResponse?.totalCount || 0}
+
+                // If not first time fetching, loading during fetch should be false and we use keepPreviousData in useSWR
+                loading={!eventResponse && isLoading}
+
+                // Pagination
+                paginationMode="server" // so the component uses rowCount instead of rows.length and shows next page
+                paginationModel={paginationModel}
+                onPaginationModelChange={handlePaginationModelChange}
+
                 columns={eventColumn}
-                initialState={{ pagination: { paginationModel } }}
-                pageSizeOptions={[5, 10]}
+                pageSizeOptions={[5, 10, 25]}
                 checkboxSelection={false}
-                onPaginationModelChange={(model, details) => {
-                    //on pagination fetch data
-                }}
                 rowSelection={false}
                 sx={{
                     '& .MuiDataGrid-virtualScroller': {
