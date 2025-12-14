@@ -11,9 +11,10 @@ import React from 'react';
 import GenericDialog from '../../../components/common/GenericDialog';
 import EventForm from './EventForm';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import type { EventData, PaginatedResponse } from '../../../types/Event';
+import type { EventData } from '../../../types/Event';
 import useSWR, { useSWRConfig } from 'swr';
-import { fetcher, createEvent, deleteEvent } from '../../../services/api';
+import { fetcher, createEvent, deleteEvent } from '../../../services/EventApiService';
+import type { PaginatedResponse } from '../../../types/Pagination';
 
 export default function EventTable() {
     const navigate = useNavigate();

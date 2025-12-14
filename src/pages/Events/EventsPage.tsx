@@ -4,8 +4,9 @@ import { Container, Typography, CircularProgress, Alert, Pagination, Box } from 
 import EventList from './EventList';
 import EventDetailsModal from './EventDetailsModal';
 import useSWR from 'swr';
-import { fetcher } from '../../services/api';
-import type { EventData, PaginatedResponse } from '../../types/Event';
+import { fetcher } from '../../services/EventApiService';
+import type { EventData } from '../../types/Event';
+import type { PaginatedResponse } from '../../types/Pagination';
 
 interface HomePageProps { };
 

@@ -1,5 +1,5 @@
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import { Box, Divider, IconButton, Typography } from '@mui/material';
+import { DataGrid, type GridColDef, type GridPaginationModel } from '@mui/x-data-grid';
+import { Alert, Box, Divider, IconButton, Typography } from '@mui/material';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InfoIcon from '@mui/icons-material/Info';
@@ -8,70 +8,44 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import PeopleIcon from '@mui/icons-material/People';
 
 import GenericDialog from '../../../components/common/GenericDialog';
-import dayjs, { Dayjs } from 'dayjs';
-import { useNavigate, useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { SessionForm } from './SessionForm';
-
-
-export interface EventSession {
-    id: number;
-    name: string;
-    description: string | null;
-    startTime: Dayjs;
-    duration: number;    // inMinutes 
-    maxParticipants: number; // Remember about post at SessionLimit table 
-    currentReserved: number; // Remember about post at sessionLimit table
-}
-
-//Mock - should be replaced with fetching service with pagination. Fetch model will change due to pagination model at backend
-
-const paginationModel = { page: 0, pageSize: 5 };
-
-const rows: EventSession[] =
-    [
-        {
-            "id": 248788,
-            "name": "eos",
-            "description": "Lorem ipsum",
-            "startTime": dayjs("2025-06-18T00:46:41.9180538"),
-            "duration": 15,
-            "maxParticipants": 20,
-            "currentReserved": 0
-        },
-        {
-            "id": 248789,
-            "name": "enim",
-            "description": "Lorem ipsum",
-            "startTime": dayjs("2025-06-18T01:01:41.9180538"),
-            "duration": 15,
-            "maxParticipants": 5,
-            "currentReserved": 1
-        },
-        {
-            "id": 248790,
-            "name": "at",
-            "description": "Lorem ipsum",
-            "startTime": dayjs("2025-06-18T01:16:41.9180538"),
-            "duration": 15,
-            "maxParticipants": 20,
-            "currentReserved": 0
-        },
-        {
-            "id": 248791,
-            "name": "quas",
-            "description": "Lorem ipsum",
-            "startTime": dayjs("2025-06-18T01:31:41.9180538"),
-            "duration": 30,
-            "maxParticipants": 10,
-            "currentReserved": 0
-        }
-    ]
-
+import type { EventSession } from '../../../types/Session';
+import useSWR, { useSWRConfig } from 'swr';
+import { fetcher } from '../../../services/SessionApiService';
+import type { PaginatedResponse } from '../../../types/Pagination';
 
 export default function EventsSessionsTable() {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>(); // will be used to fetch data about event's session
-    const eventColumn: GridColDef[] = [
+
+
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const { mutate } = useSWRConfig();
+
+    const paginationModel = {
+        page: parseInt(searchParams.get('page') || '0', 10), // Mui GridPaginationModel index starts at 0
+        pageSize: parseInt(searchParams.get('pageSize') || '5', 10)
+    };
+
+    const { data: eventSessionResponse, error, isLoading } = useSWR<PaginatedResponse<EventSession>>(
+        `/event/${id}/sessions?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`, // API's page starts at 1
+        fetcher,
+        {
+            keepPreviousData: true,
+        }
+    );
+
+    const handlePaginationModelChange = (newModel: GridPaginationModel) => {
+        setSearchParams({
+            page: newModel.page.toString(),
+            pageSize: newModel.pageSize.toString()
+        });
+    };
+
+    const eventSessionColumn: GridColDef[] = [
         { field: 'id', headerName: 'ID', width: 80 },
         { field: 'name', headerName: 'Name', flex: 2, minWidth: 150 },
         { field: 'startTime', headerName: 'Start Time', flex: 1.5, minWidth: 150 },
@@ -139,6 +113,15 @@ export default function EventsSessionsTable() {
         },
     ];
 
+    if (error) {
+        return (
+            <Box sx={{ p: 5 }}>
+                <Alert severity="error">Failed to load events sessions.</Alert>
+            </Box>
+        );
+    }
+
+
     return (
         <Box sx={{ display: 'flex', flexDirection: "column", width: "auto", maxWidth: '100%', margin: 'auto', p: 5 }}>
             <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", alignItems: 'center', mb: 2 }}>
@@ -156,16 +139,27 @@ export default function EventsSessionsTable() {
             </Box>
             <Divider />
             <DataGrid
-                rows={rows}
-                columns={eventColumn}
+                rows={eventSessionResponse?.items || []}
+                columns={eventSessionColumn}
+                rowCount={eventSessionResponse?.totalCount || 0}
+                loading={!eventSessionResponse && isLoading}
                 initialState={{ pagination: { paginationModel } }}
-                pageSizeOptions={[5, 10]}
+                pageSizeOptions={[5, 10, 25]}
+
+                paginationMode="server"
+                paginationModel={paginationModel}
+                onPaginationModelChange={handlePaginationModelChange}
+
                 checkboxSelection={false}
-                onPaginationModelChange={(model, details) => {
-                    //on pagination fetch data
-                }}
                 rowSelection={false}
-                sx={{ border: 0 }}
+                sx={{
+                    '& .MuiDataGrid-virtualScroller': {
+                        overflowX: 'auto',
+                    },
+                    '& .MuiDataGrid-main': {
+                        minWidth: '100%',
+                    }
+                }}
                 showToolbar
             />
         </Box>
