@@ -9,6 +9,8 @@ import { FormContainer, TextFieldElement, SwitchElement, useForm } from 'react-h
 import { DateTimePickerElement } from "react-hook-form-mui/date-pickers";
 
 import type { CreateEventForm } from "./CreateEventForm";
+import { EventFormModel } from "../../../types/EventFormModel";
+import { zodResolver } from "@hookform/resolvers/zod"
 
 type EventFormProps = {
     readonly?: boolean;
@@ -24,6 +26,7 @@ export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubm
         defaultValues: initialData ?? {
             isOverLappingAllowed: true,
         },
+        resolver: zodResolver(EventFormModel)
     });
 
     const onSubmit = async (data: CreateEventForm) => {
@@ -71,7 +74,7 @@ export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubm
                     disabled={readonly}
                 />
 
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pl">
                     <DateTimePickerElement
                         label="Start date"
                         name="startTime"
@@ -80,10 +83,11 @@ export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubm
                         minutesStep={15}
                         required
                         disabled={readonly}
+                        format="DD/MM/YYYY HH:mm"
                     />
                 </LocalizationProvider>
 
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pl">
                     <DateTimePickerElement
                         label="End date"
                         name="endTime"
@@ -92,6 +96,7 @@ export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubm
                         minutesStep={15}
                         required
                         disabled={readonly}
+                        format="DD/MM/YYYY HH:mm"
                     />
                 </LocalizationProvider>
 
