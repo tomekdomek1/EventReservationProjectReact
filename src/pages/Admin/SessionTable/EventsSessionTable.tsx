@@ -8,22 +8,31 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import PeopleIcon from '@mui/icons-material/People';
 
 import GenericDialog from '../../../components/common/GenericDialog';
-import dayjs from 'dayjs';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { SessionForm } from './SessionForm';
 import type { EventSession } from '../../../types/Session';
 import useSWR, { useSWRConfig } from 'swr';
-import { fetcher } from '../../../services/SessionApiService';
+import { createSession, deleteSession, fetcher, updateSession } from '../../../services/SessionApiService';
+import { getEvent } from '../../../services/EventApiService';
 import type { PaginatedResponse } from '../../../types/Pagination';
+import { useSnackbar } from 'notistack';
+import { showApiError } from '../../../services/api';
+import type { EventData } from '../../../types/Event';
 
-export default function EventsSessionsTable() {
+export default function EventsSessionsTable(eventDetails?: EventData) {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>(); // will be used to fetch data about event's session
-
 
     const [searchParams, setSearchParams] = useSearchParams();
 
     const { mutate } = useSWRConfig();
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    const { data: fetchedEventDetails } = useSWR<EventData>(
+        id ? `event-${id}` : null,
+        () => getEvent(Number(id))
+    );
 
     const paginationModel = {
         page: parseInt(searchParams.get('page') || '0', 10), // Mui GridPaginationModel index starts at 0
@@ -44,6 +53,73 @@ export default function EventsSessionsTable() {
             pageSize: newModel.pageSize.toString()
         });
     };
+
+    const handleCreate = async (data: any) => {
+        try {
+            const eventId = Number(id);
+            const formattedData = {
+                ...data,
+                startTime: data.startTime && typeof data.startTime.toISOString === 'function' ? data.startTime.toISOString() : data.startTime
+            };
+            await createSession(eventId, formattedData);
+
+            mutate(
+                `/event/${id}/sessions?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
+            );
+
+            enqueueSnackbar("Success!", {
+                autoHideDuration: 3000,
+                variant: "success",
+            });
+        } catch (error) {
+            console.error(error);
+            showApiError(error, "Error occured while creating session");
+        }
+    };
+
+
+
+    const handleEdit = async (id: number, data: any) => {
+        try {
+             const formattedData = {
+                ...data,
+                startTime: data.startTime && typeof data.startTime.toISOString === 'function' ? data.startTime.toISOString() : data.startTime
+            };
+            await updateSession(id, formattedData);
+
+            mutate(
+                `/event/${id}/sessions?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
+            );
+
+            enqueueSnackbar("Success!", {
+                autoHideDuration: 3000,
+                variant: "success",
+            });
+        } catch (error) {
+            console.error(error);
+            showApiError(error, "Error occured while editing session");
+        }
+    };
+
+
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteSession(id);
+
+            mutate(
+                `/event/${id}/sessions?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
+            );
+
+            enqueueSnackbar("Success!", {
+                autoHideDuration: 3000,
+                variant: "success",
+            });
+        } catch (error) {
+            console.error(error);
+            showApiError(error, "Error occured while deleting session");
+        }
+    };
+
 
     const eventSessionColumn: GridColDef[] = [
         { field: 'id', headerName: 'ID', width: 80 },
@@ -75,7 +151,7 @@ export default function EventsSessionsTable() {
                             onConfirm={() => {
                                 alert(JSON.stringify(thisRow, null, 4))
                             }}
-                            content={<SessionForm initialData={thisRow} readonly={true} />}
+                            content={<SessionForm initialData={thisRow} readonly={true} eventDetails={fetchedEventDetails} />}
                             hideActions
                         />
                         <GenericDialog
@@ -84,10 +160,7 @@ export default function EventsSessionsTable() {
                                     <EditIcon />
                                 </IconButton>
                             }
-                            onConfirm={() => {
-                                alert(JSON.stringify(thisRow, null, 4))
-                            }}
-                            content={<SessionForm initialData={thisRow} />}
+                            content={<SessionForm initialData={thisRow}  onSubmit={(data) => handleEdit(thisRow.id, data)} eventDetails={fetchedEventDetails} />}
                             hideActions
                         />
                         <GenericDialog
@@ -99,7 +172,7 @@ export default function EventsSessionsTable() {
                             title="Are you sure?"
                             content="Do you want to delete this session? It cannot be reverted."
                             onConfirm={() => {
-                                alert(JSON.stringify(thisRow, null, 4));
+                                handleDelete(thisRow.id)
                             }}
                             confirmText="Delete"
                             cancelText="Cancel"
@@ -130,10 +203,7 @@ export default function EventsSessionsTable() {
                     trigger={<IconButton>
                         <AddCircleOutlineIcon />
                     </IconButton>}
-                    content={<SessionForm />}
-                    onConfirm={() => {
-                        alert("Created!")
-                    }}
+                    content={<SessionForm onSubmit={handleCreate} eventDetails={fetchedEventDetails}/>}
                     hideActions
                 />
             </Box>

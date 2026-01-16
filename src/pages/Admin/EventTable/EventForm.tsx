@@ -26,7 +26,10 @@ export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubm
         defaultValues: initialData ?? {
             isOverLappingAllowed: true,
         },
-        resolver: zodResolver(EventFormModel)
+        resolver: zodResolver(EventFormModel),
+        mode: 'onChange',
+        reValidateMode: 'onChange',
+        criteriaMode:'all'
     });
 
     const onSubmit = async (data: CreateEventForm) => {

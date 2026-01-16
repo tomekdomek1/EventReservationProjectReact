@@ -13,15 +13,21 @@ import EventForm from './EventForm';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { EventData } from '../../../types/Event';
 import useSWR, { useSWRConfig } from 'swr';
-import { fetcher, createEvent, deleteEvent } from '../../../services/EventApiService';
+import { fetcher, createEvent, deleteEvent, updateEvent } from '../../../services/EventApiService';
 import type { PaginatedResponse } from '../../../types/Pagination';
+import { useSnackbar } from 'notistack';
+import type { Dayjs } from 'dayjs';
+import { showApiError } from '../../../services/api';
 
 export default function EventTable() {
+
     const navigate = useNavigate();
 
     const [searchParams, setSearchParams] = useSearchParams();
 
     const { mutate } = useSWRConfig();
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const paginationModel = {
         page: parseInt(searchParams.get('page') || '0', 10), // Mui GridPaginationModel index starts at 0
@@ -43,22 +49,69 @@ export default function EventTable() {
         });
     };
 
-    const handleCreateEvent = async (data: any) => {
-        await createEvent(data);
-        mutate(`/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`);
-        // alert("Event created successfully!");
+    const handleCreate = async (data: any) => {
+        try {
+            await createEvent(data);
+
+            mutate(
+                `/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
+            );
+
+            enqueueSnackbar("Success!", {
+                autoHideDuration: 3000,
+                variant: "success",
+            });
+        } catch (error) {
+            console.error(error);
+            showApiError(error, "Wystąpił błąd podczas edycji wydarzenia");
+        }
     };
 
-    const handleDelete = async (id: number) => {
-        await deleteEvent(id);
-        mutate(`/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`);
+
+
+    const handleEdit = async (id: number, data: any) => {
+        try {
+            await updateEvent(id, data);
+
+            mutate(
+                `/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
+            );
+
+            enqueueSnackbar("Success!", {
+                autoHideDuration: 3000,
+                variant: "success",
+            });
+        } catch (error) {
+            console.error(error);
+            showApiError(error, "Wystąpił błąd podczas edycji wydarzenia");
+        }
     };
+
+
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteEvent(id);
+
+            mutate(
+                `/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
+            );
+
+            enqueueSnackbar("Success!", {
+                autoHideDuration: 3000,
+                variant: "success",
+            });
+        } catch (error) {
+            console.error(error);
+            showApiError(error, "Wystąpił błąd podczas edycji wydarzenia");
+        }
+    };
+
 
     const eventColumn: GridColDef[] = [
         { field: 'id', headerName: "ID", flex: 0.5, minWidth: 70 },
         { field: 'name', headerName: "Name", flex: 1.5, minWidth: 150 },
-        { field: 'startTime', headerName: "Start date", flex: 1, minWidth: 120, valueFormatter: (value: any) => value?.format('DD/MM/YYYY HH:mm') },
-        { field: 'endTime', headerName: "End Date", flex: 1, minWidth: 120, valueFormatter: (value: any) => value?.format('DD/MM/YYYY HH:mm') },
+        { field: 'startTime', headerName: "Start date", flex: 1, minWidth: 120, valueFormatter: (value: Dayjs) => value?.format('DD/MM/YYYY HH:mm') },
+        { field: 'endTime', headerName: "End Date", flex: 1, minWidth: 120, valueFormatter: (value: Dayjs) => value?.format('DD/MM/YYYY HH:mm') },
         { field: 'location', headerName: "Location", flex: 1, minWidth: 500 },
         {
             field: "action",
@@ -79,15 +132,14 @@ export default function EventTable() {
                         <GenericDialog
                             trigger={<IconButton onClick={onClick}><InfoIcon /></IconButton>}
                             content={<EventForm initialData={thisRow} readonly={true} />}
-                            onConfirm={() => alert(JSON.stringify(thisRow, null, 4))}
                             hideActions
                         />
                         <GenericDialog
                             trigger={<IconButton onClick={onClick}><EditIcon /></IconButton>}
-                            content={<EventForm initialData={thisRow} />}
-                            onConfirm={() => alert(JSON.stringify(thisRow, null, 4))}
+                            content={<EventForm initialData={thisRow} onSubmit={(data) => handleEdit(thisRow.id, data)} />}
                             hideActions
                         />
+
                         <GenericDialog
                             trigger={<IconButton onClick={onClick}><DeleteIcon /></IconButton>}
                             title={"Are you sure?"}
@@ -121,7 +173,7 @@ export default function EventTable() {
                     trigger={<IconButton>
                         <AddCircleOutlineIcon />
                     </IconButton>}
-                    content={<EventForm onSubmit={handleCreateEvent} />}
+                    content={<EventForm onSubmit={handleCreate} />}
                     onConfirm={() => {
                         alert("Created!")
                     }}

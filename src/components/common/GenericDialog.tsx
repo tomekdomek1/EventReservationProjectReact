@@ -5,7 +5,7 @@ interface GenericDialogProps {
     trigger: React.ReactElement<{ onClick?: () => void }>;
     title?: string | React.ReactNode;
     content: string | React.ReactNode;
-    onConfirm: () => void;
+    onConfirm?: () => void;
     hideActions?: boolean;
     confirmText?: string;
     cancelText?: string;
