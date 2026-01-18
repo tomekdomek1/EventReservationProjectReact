@@ -13,6 +13,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 import type { EventData } from '../../types/Event';
+import EventSessionList from './Sessions/EventSessionList';
 
 interface EventDetailsModalProps {
     event: EventData | null;
@@ -30,7 +31,7 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({ event, open, onCl
         <Dialog
             open={open}
             onClose={onClose}
-            maxWidth="sm"
+            maxWidth="md"
             fullWidth
         >
             <DialogTitle>
@@ -87,6 +88,14 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({ event, open, onCl
                         <strong>Email:</strong> {event.eventEmail}
                     </Typography>
                 </Box>
+
+                <Divider sx={{ my: 2 }} />
+                
+                <Typography variant="h6" component="h3" gutterBottom sx={{ mt: 3, mb: 2 }}>
+                    Sessions
+                </Typography>
+                
+                <EventSessionList eventId={event.id} />
 
             </DialogContent>
         </Dialog>
