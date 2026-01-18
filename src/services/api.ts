@@ -1,5 +1,6 @@
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
+import { useAuthStore } from "../store/authStore";
 
 export const api = axios.create({
     baseURL: 'https://localhost:7247/api', // TODO: use env
@@ -8,7 +9,14 @@ export const api = axios.create({
     },
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+api.interceptors.request.use((config) => {
+    const token = useAuthStore.getState().token;
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
 export const showApiError = (error: any, fallbackMessage: string) => {
     const message =
         error?.response?.data?.message ||
@@ -16,7 +24,7 @@ export const showApiError = (error: any, fallbackMessage: string) => {
         fallbackMessage;
 
     enqueueSnackbar(message, {
-        autoHideDuration: 5000,
+        autoHideDuration: 3000,
         variant: "error",
     });
 };
