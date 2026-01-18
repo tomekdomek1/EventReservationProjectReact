@@ -20,6 +20,7 @@
     "@tiptap/starter-kit": "^3.11.1",
     "axios": "^1.13.2",
     "dayjs": "^1.11.19",
+    "js-file-download": "^0.4.12",
     "mui-tiptap": "^1.28.1",
     "notistack": "^3.0.2",
     "react": "^19.2.0",

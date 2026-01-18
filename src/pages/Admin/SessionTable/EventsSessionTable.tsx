@@ -8,20 +8,20 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import PeopleIcon from '@mui/icons-material/People';
 
 import GenericDialog from '../../../components/common/GenericDialog';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { SessionForm } from './SessionForm';
 import type { EventSession } from '../../../types/Session';
 import useSWR, { useSWRConfig } from 'swr';
-import { createSession, deleteSession, fetcher, updateSession } from '../../../services/SessionApiService';
+import { createSession, deleteSession, exportSession, fetcher, updateSession } from '../../../services/SessionApiService';
 import { getEvent } from '../../../services/EventApiService';
 import type { PaginatedResponse } from '../../../types/Pagination';
 import { useSnackbar } from 'notistack';
 import { showApiError } from '../../../services/api';
 import type { EventData } from '../../../types/Event';
+import fileDownload from 'js-file-download';
 
-export default function EventsSessionsTable(eventDetails?: EventData) {
-    const navigate = useNavigate();
-    const { id } = useParams<{ id: string }>(); // will be used to fetch data about event's session
+export default function EventsSessionsTable() {
+    const { id } = useParams<{ id: string }>();
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -79,13 +79,13 @@ export default function EventsSessionsTable(eventDetails?: EventData) {
 
 
 
-    const handleEdit = async (id: number, data: any) => {
+    const handleEdit = async (sessionId: number, data: any) => {
         try {
-             const formattedData = {
+            const formattedData = {
                 ...data,
                 startTime: data.startTime && typeof data.startTime.toISOString === 'function' ? data.startTime.toISOString() : data.startTime
             };
-            await updateSession(id, formattedData);
+            await updateSession(sessionId, formattedData);
 
             mutate(
                 `/event/${id}/sessions?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
@@ -102,9 +102,9 @@ export default function EventsSessionsTable(eventDetails?: EventData) {
     };
 
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (sessionId: number) => {
         try {
-            await deleteSession(id);
+            await deleteSession(sessionId);
 
             mutate(
                 `/event/${id}/sessions?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
@@ -117,6 +117,18 @@ export default function EventsSessionsTable(eventDetails?: EventData) {
         } catch (error) {
             console.error(error);
             showApiError(error, "Error occured while deleting session");
+        }
+    };
+
+    const handleExport = async (sessionId: number) => {
+        try {
+            const response = await exportSession(sessionId);
+
+            fileDownload(response.data, `session_export_${sessionId}.json`);
+
+            enqueueSnackbar("Success!", { variant: "success" });
+        } catch (error) {
+            showApiError(error, "Export failed");
         }
     };
 
@@ -148,9 +160,6 @@ export default function EventsSessionsTable(eventDetails?: EventData) {
                                     <InfoIcon />
                                 </IconButton>
                             }
-                            onConfirm={() => {
-                                alert(JSON.stringify(thisRow, null, 4))
-                            }}
                             content={<SessionForm initialData={thisRow} readonly={true} eventDetails={fetchedEventDetails} />}
                             hideActions
                         />
@@ -160,7 +169,7 @@ export default function EventsSessionsTable(eventDetails?: EventData) {
                                     <EditIcon />
                                 </IconButton>
                             }
-                            content={<SessionForm initialData={thisRow}  onSubmit={(data) => handleEdit(thisRow.id, data)} eventDetails={fetchedEventDetails} />}
+                            content={<SessionForm initialData={thisRow} onSubmit={(data) => handleEdit(thisRow.id, data)} eventDetails={fetchedEventDetails} />}
                             hideActions
                         />
                         <GenericDialog
@@ -177,7 +186,7 @@ export default function EventsSessionsTable(eventDetails?: EventData) {
                             confirmText="Delete"
                             cancelText="Cancel"
                         />
-                        <IconButton onClick={() => navigate(`${thisRow.id}`)}>
+                        <IconButton onClick={() => handleExport(thisRow.id)}>
                             <PeopleIcon />
                         </IconButton>
                     </div >
@@ -203,7 +212,7 @@ export default function EventsSessionsTable(eventDetails?: EventData) {
                     trigger={<IconButton>
                         <AddCircleOutlineIcon />
                     </IconButton>}
-                    content={<SessionForm onSubmit={handleCreate} eventDetails={fetchedEventDetails}/>}
+                    content={<SessionForm onSubmit={handleCreate} eventDetails={fetchedEventDetails} />}
                     hideActions
                 />
             </Box>

@@ -8,7 +8,6 @@ import type { EventSession } from "../../../types/Session";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { EventData } from "../../../types/Event";
 import z from "zod";
-import dayjs from "dayjs";
 import { SessionFormModel } from "../../../types/SessionFormModel";
 
 

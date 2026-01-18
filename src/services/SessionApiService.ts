@@ -18,7 +18,7 @@ export const fetcher = async (url: string): Promise<PaginatedResponse<EventSessi
     };
 };
 
-export const createSession = async (eventId: number,sessionData: Omit<EventSession, 'id'>) => {
+export const createSession = async (eventId: number, sessionData: Omit<EventSession, 'id'>) => {
     const response = await api.post(`/event/${eventId}/sessions`, sessionData);
     return response.data;
 };
@@ -31,4 +31,10 @@ export const updateSession = async (sessionId: number, sessionData: Partial<Omit
 
 export const deleteSession = async (sessionId: number) => {
     await api.delete(`/sessions/${sessionId}`);
+}
+
+export const exportSession = async (sessionId: number) => {
+    return await api.get(`/sessions/${sessionId}/export/json`, {
+        responseType: 'blob'
+    });
 }
