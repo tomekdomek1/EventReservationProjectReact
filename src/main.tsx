@@ -12,6 +12,7 @@ import NotFoundPage from './pages/NotFoundPage'
 import { ThemeModeProvider } from './theme/ThemeModeProvider'
 import EventsSessionsTable from './pages/Admin/SessionTable/EventsSessionTable'
 import { SnackbarProvider } from 'notistack';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 const router = createBrowserRouter([
   {
@@ -20,9 +21,24 @@ const router = createBrowserRouter([
       { path: '/', element: <EventsPage /> },
       { path: '/login', element: <LoginScreen /> },
       { path: '/register', element: <RegistrationPage /> },
-      { path: '/profile', element: <UserProfilePage /> },
-      { path: '/admin/events', element: <EventTable /> },
-      { path: 'admin/events/:id', element: <EventsSessionsTable /> },
+
+      // Routes for authenticated users (any role)
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { path: '/profile', element: <UserProfilePage /> },
+        ]
+      },
+
+      // Routes for Admin only
+      {
+        element: <ProtectedRoute allowedRoles={['Admin']} />,
+        children: [
+          { path: '/admin/events', element: <EventTable /> },
+          { path: 'admin/events/:id', element: <EventsSessionsTable /> },
+        ]
+      },
+
       { path: '*', element: <NotFoundPage /> }
 
     ]
