@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Box, Grid, Divider, Skeleton } from '@mui/material';
+import { Typography, Box, Grid, Divider, Skeleton, Paper } from '@mui/material';
 import useSWR from 'swr';
 import { getUserProfile } from '../../../services/UserApiService';
 import PersonIcon from '@mui/icons-material/Person';
@@ -14,15 +14,15 @@ const UserInfo: React.FC = () => {
     if (error) return <Typography color="error">Failed to load profile information.</Typography>;
 
     return (
-        <Card elevation={2}>
-            <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <PersonIcon color="primary" sx={{ mr: 1 }} />
-                    <Typography variant="h6">User Information</Typography>
+        <Paper elevation={0} variant="outlined" sx={{ p: 4, borderRadius: 2 }}>
+            <Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                    <PersonIcon color="primary" sx={{ mr: 1, fontSize: 30 }} />
+                    <Typography variant="h6" fontWeight="600">User Information</Typography>
                 </Box>
-                <Divider sx={{ mb: 2 }} />
+                <Divider sx={{ mb: 3 }} />
                 
-                <Grid container spacing={2}>
+                <Grid container spacing={3}>
                     <Grid size={{ xs: 12, sm: 6 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                             <EmailIcon fontSize="small" sx={{ mr: 1, color: 'text.secondary' }} />
@@ -55,9 +55,9 @@ const UserInfo: React.FC = () => {
                         <Typography variant="body1">{profile?.country}</Typography>
                     </Grid>
                 </Grid>
-            </CardContent>
-        </Card>
-    );
+            </Box>
+        </Paper>
+    )
 };
 
 export default UserInfo;
