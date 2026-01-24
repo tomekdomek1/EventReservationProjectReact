@@ -28,7 +28,6 @@ export const getEvent = async (id: number): Promise<EventData> => {
     };
 };
 
-// TODO: maybe it's best to use CreateEventForm for this method instead of 'omiting' the id from EventData?
 export const createEvent = async (eventData: Omit<EventData, 'id'>) => {
     const response = await api.post('/events', eventData);
     return response.data;
