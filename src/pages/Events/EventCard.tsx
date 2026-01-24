@@ -35,8 +35,8 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
                             display: '-webkit-box',
                             overflow: 'hidden',
                             WebkitBoxOrient: 'vertical',
-                            WebkitLineClamp: 2, // Limit title to 2 lines
-                            minHeight: '3.2em', // Fixed height for 2 lines
+                            WebkitLineClamp: 2,
+                            minHeight: '3.2em', 
                         }}
                     >
                         {event.name}
@@ -62,8 +62,8 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
                                     display: '-webkit-box',
                                     overflow: 'hidden',
                                     WebkitBoxOrient: 'vertical',
-                                    WebkitLineClamp: 2, // Limit location to 2 lines
-                                    minHeight: '3em', // Reserve space for location
+                                    WebkitLineClamp: 2, 
+                                    minHeight: '3em', 
                                 }}
                             >
                                 {event.location}

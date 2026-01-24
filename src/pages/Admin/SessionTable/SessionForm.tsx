@@ -24,7 +24,6 @@ export const SessionForm = ({ readonly = false, initialData, onDialogClose, onSu
     const schema = useMemo(() => SessionFormModel(eventDetails), [eventDetails]);
 
     type FormInput = z.input<typeof schema>;
-    type FormOutput = z.output<typeof schema>;
 
 
     const formContext = useForm<FormInput>({

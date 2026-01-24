@@ -49,6 +49,7 @@ export default function EventTable() {
         });
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleCreate = async (data: any) => {
         try {
             await createEvent(data);
@@ -69,6 +70,7 @@ export default function EventTable() {
 
 
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleEdit = async (id: number, data: any) => {
         try {
             await updateEvent(id, data);

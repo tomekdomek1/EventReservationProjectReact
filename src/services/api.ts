@@ -17,6 +17,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const showApiError = (error: any, fallbackMessage: string) => {
     const message =
         error?.response?.data?.message ||

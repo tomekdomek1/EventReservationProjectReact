@@ -1,5 +1,5 @@
 import { type JSX } from "react";
-import { Box, Button, Paper, Typography, Checkbox, FormControlLabel } from "@mui/material";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { FormContainer, TextFieldElement, CheckboxElement, useForm } from 'react-hook-form-mui';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";

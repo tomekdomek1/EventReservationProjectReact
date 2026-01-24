@@ -54,6 +54,7 @@ export default function EventsSessionsTable() {
         });
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleCreate = async (data: any) => {
         try {
             const eventId = Number(id);
@@ -79,6 +80,7 @@ export default function EventsSessionsTable() {
 
 
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleEdit = async (sessionId: number, data: any) => {
         try {
             const formattedData = {
