@@ -42,3 +42,9 @@ export const updateEvent = async (id: number, eventData: Partial<Omit<EventData,
 export const deleteEvent = async (id: number) => {
     await api.delete(`/events/${id}`);
 }
+
+export const exportEvent = async (eventId: number) => {
+    return await api.get(`/events/${eventId}/export/json`, {
+        responseType: 'blob'
+    });
+}

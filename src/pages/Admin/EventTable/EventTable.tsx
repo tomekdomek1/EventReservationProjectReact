@@ -6,6 +6,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 import React from 'react';
 import GenericDialog from '../../../components/common/GenericDialog';
@@ -13,11 +14,12 @@ import EventForm from './EventForm';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { EventData } from '../../../types/Event';
 import useSWR, { useSWRConfig } from 'swr';
-import { fetcher, createEvent, deleteEvent, updateEvent } from '../../../services/EventApiService';
+import { fetcher, createEvent, deleteEvent, updateEvent, exportEvent } from '../../../services/EventApiService';
 import type { PaginatedResponse } from '../../../types/Pagination';
 import { useSnackbar } from 'notistack';
 import type { Dayjs } from 'dayjs';
 import { showApiError } from '../../../services/api';
+import fileDownload from 'js-file-download';
 
 export default function EventTable() {
 
@@ -109,6 +111,21 @@ export default function EventTable() {
     };
 
 
+    const handleExport = async (eventId: number, eventName: string) => {
+        try {
+            const response = await exportEvent(eventId);
+            fileDownload(response.data, `event_${eventName.replace(/\s+/g, '_')}_${eventId}.json`);
+            enqueueSnackbar("Export successful!", {
+                autoHideDuration: 3000,
+                variant: "success",
+            });
+        } catch (error) {
+            console.error(error);
+            showApiError(error, "Export failed");
+        }
+    };
+
+
     const eventColumn: GridColDef[] = [
         { field: 'id', headerName: "ID", flex: 0.5, minWidth: 70 },
         { field: 'name', headerName: "Name", flex: 1.5, minWidth: 150 },
@@ -150,6 +167,9 @@ export default function EventTable() {
                             confirmText='Delete'
                             cancelText='Cancel'
                         />
+                        <IconButton onClick={() => handleExport(thisRow.id, thisRow.name)}>
+                            <FileDownloadIcon />
+                        </IconButton>
                         <IconButton onClick={() => navigate(`${thisRow.id}`)}>
                             <LibraryAddIcon />
                         </IconButton>
