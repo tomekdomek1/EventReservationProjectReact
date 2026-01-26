@@ -17,6 +17,8 @@ import EventsSessionsTable from './pages/Admin/SessionTable/EventsSessionTable'
 import { SnackbarProvider } from 'notistack';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import NotFoundPage from './pages/notFoundPage'
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const router = createBrowserRouter([
   {
@@ -57,9 +59,11 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <SnackbarProvider autoHideDuration={3000}>
     <StrictMode>
-      <ThemeModeProvider>
-        <RouterProvider router={router} />
-      </ThemeModeProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <ThemeModeProvider>
+          <RouterProvider router={router} />
+        </ThemeModeProvider>
+      </LocalizationProvider>
     </StrictMode>,
   </SnackbarProvider>
 )
