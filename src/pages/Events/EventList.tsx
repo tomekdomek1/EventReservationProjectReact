@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Box } from '@mui/material';
+import { Grid, Box, Typography } from '@mui/material';
 import EventCard from './EventCard';
 import type { EventData } from '../../types/Event';
 
@@ -9,6 +9,16 @@ interface EventListProps {
 }
 
 const EventList: React.FC<EventListProps> = ({ events, onSelectEvent }) => {
+    if (events.length === 0) {
+        return (
+            <Box sx={{ py: 8, textAlign: 'center' }}>
+                <Typography variant="h6" color="text.secondary">
+                    No events found matching your criteria.
+                </Typography>
+            </Box>
+        );
+    }
+
     return (
         <Box sx={{ py: 4 }}>
             <Grid container spacing={3}>

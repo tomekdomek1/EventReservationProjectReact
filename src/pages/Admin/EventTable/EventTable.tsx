@@ -37,11 +37,16 @@ export default function EventTable() {
 
     const fromDateParam = searchParams.get('fromDate');
     const toDateParam = searchParams.get('toDate');
+    const searchParam = searchParams.get('search');
 
     const swrKey = useMemo(() => {
         const params = new URLSearchParams();
         params.append('page', (paginationModel.page + 1).toString()); // API starts at 1
         params.append('pageSize', paginationModel.pageSize.toString());
+
+        if (searchParam) {
+            params.append('search', searchParam);
+        }
 
         const effectiveFromDate = fromDateParam || dayjs().format('YYYY-MM-DD');
         params.append('fromDate', effectiveFromDate);
@@ -51,7 +56,7 @@ export default function EventTable() {
         }
 
         return `/events/filter?${params.toString()}`;
-    }, [paginationModel, fromDateParam, toDateParam]);
+    }, [paginationModel, fromDateParam, toDateParam, searchParam]);
 
     const { data: eventResponse, error, isLoading, mutate } = useSWR<PaginatedResponse<EventData>>(
         swrKey,
@@ -61,10 +66,16 @@ export default function EventTable() {
         }
     );
 
-    const handleFilter = (newFrom: string | null, newTo: string | null) => {
+    const handleFilter = (newFrom: string | null, newTo: string | null, newSearch: string) => {
         setSearchParams(prev => {
             prev.set('page', '0'); // Reset to first page
             
+            if (newSearch) {
+                prev.set('search', newSearch);
+            } else {
+                prev.delete('search');
+            }
+
             if (newFrom) {
                 prev.set('fromDate', newFrom);
             } else {
@@ -86,6 +97,7 @@ export default function EventTable() {
             prev.set('page', '0');
             prev.delete('fromDate');
             prev.delete('toDate');
+            prev.delete('search');
             return prev;
         });
     };
@@ -243,6 +255,7 @@ export default function EventTable() {
                  <EventFilterBar 
                     initialFromDate={fromDateParam || dayjs().format('YYYY-MM-DD')}
                     initialToDate={toDateParam}
+                    initialSearch={searchParam}
                     onFilter={handleFilter}
                     onClear={handleClearFilter}
                 />

@@ -19,6 +19,7 @@ const EventsPage: React.FC<HomePageProps> = () => {
     const pageSize = parseInt(searchParams.get('pageSize') || '8', 10);
     const fromDateParam = searchParams.get('fromDate');
     const toDateParam = searchParams.get('toDate');
+    const searchParam = searchParams.get('search');
 
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
@@ -26,6 +27,10 @@ const EventsPage: React.FC<HomePageProps> = () => {
         const params = new URLSearchParams();
         params.append('page', page.toString());
         params.append('pageSize', pageSize.toString());
+
+        if (searchParam) {
+            params.append('search', searchParam);
+        }
 
         const effectiveFromDate = fromDateParam || dayjs().format('YYYY-MM-DD');
         params.append('fromDate', effectiveFromDate);
@@ -35,7 +40,7 @@ const EventsPage: React.FC<HomePageProps> = () => {
         }
 
         return `/events/filter?${params.toString()}`;
-    }, [page, pageSize, fromDateParam, toDateParam]);
+    }, [page, pageSize, fromDateParam, toDateParam, searchParam]);
 
     const { data: eventResponse, error, isLoading } = useSWR<PaginatedResponse<EventData>>(
         swrKey,
@@ -45,9 +50,15 @@ const EventsPage: React.FC<HomePageProps> = () => {
         }
     );
 
-    const handleFilter = (newFrom: string | null, newTo: string | null) => {
+    const handleFilter = (newFrom: string | null, newTo: string | null, newSearch: string) => {
         setSearchParams(prev => {
             prev.set('page', '1');
+            
+            if (newSearch) {
+                prev.set('search', newSearch);
+            } else {
+                prev.delete('search');
+            }
 
             if (newFrom) {
                 prev.set('fromDate', newFrom);
@@ -60,7 +71,7 @@ const EventsPage: React.FC<HomePageProps> = () => {
             } else {
                 prev.delete('toDate');
             }
-
+            
             return prev;
         });
     };
@@ -70,6 +81,7 @@ const EventsPage: React.FC<HomePageProps> = () => {
             prev.set('page', '1');
             prev.delete('fromDate');
             prev.delete('toDate');
+            prev.delete('search');
             return prev;
         });
     };
@@ -98,9 +110,10 @@ const EventsPage: React.FC<HomePageProps> = () => {
                 Upcoming Events
             </Typography>
 
-            <EventFilterBar
+            <EventFilterBar 
                 initialFromDate={fromDateParam || dayjs().format('YYYY-MM-DD')}
                 initialToDate={toDateParam}
+                initialSearch={searchParam}
                 onFilter={handleFilter}
                 onClear={handleClearFilter}
             />
