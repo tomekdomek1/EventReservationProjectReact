@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Container, Typography, CircularProgress, Alert, Pagination, Box } from '@mui/material';
 import EventList from './EventList';
 import EventDetailsModal from './EventDetailsModal';
+import EventFilterBar from './EventFilterBar';
 import useSWR from 'swr';
 import { fetcher } from '../../services/EventApiService';
 import type { EventData } from '../../types/Event';
 import type { PaginatedResponse } from '../../types/Pagination';
+import dayjs from 'dayjs';
 
 interface HomePageProps { };
 
@@ -15,20 +17,65 @@ const EventsPage: React.FC<HomePageProps> = () => {
 
     const page = parseInt(searchParams.get('page') || '1', 10);
     const pageSize = parseInt(searchParams.get('pageSize') || '8', 10);
+    const fromDateParam = searchParams.get('fromDate');
+    const toDateParam = searchParams.get('toDate');
 
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
+    const swrKey = useMemo(() => {
+        const params = new URLSearchParams();
+        params.append('page', page.toString());
+        params.append('pageSize', pageSize.toString());
+
+        const effectiveFromDate = fromDateParam || dayjs().format('YYYY-MM-DD');
+        params.append('fromDate', effectiveFromDate);
+
+        if (toDateParam) {
+            params.append('toDate', toDateParam);
+        }
+
+        return `/events/filter?${params.toString()}`;
+    }, [page, pageSize, fromDateParam, toDateParam]);
+
     const { data: eventResponse, error, isLoading } = useSWR<PaginatedResponse<EventData>>(
-        `/events?page=${page}&pageSize=${pageSize}`,
+        swrKey,
         fetcher,
         {
             keepPreviousData: true,
         }
     );
 
+    const handleFilter = (newFrom: string | null, newTo: string | null) => {
+        setSearchParams(prev => {
+            prev.set('page', '1');
+
+            if (newFrom) {
+                prev.set('fromDate', newFrom);
+            } else {
+                prev.set('fromDate', dayjs().format('YYYY-MM-DD'));
+            }
+
+            if (newTo) {
+                prev.set('toDate', newTo);
+            } else {
+                prev.delete('toDate');
+            }
+
+            return prev;
+        });
+    };
+
+    const handleClearFilter = () => {
+        setSearchParams(prev => {
+            prev.set('page', '1');
+            prev.delete('fromDate');
+            prev.delete('toDate');
+            return prev;
+        });
+    };
+
     const handleSelectEvent = (id: number) => {
         setSelectedEventId(id);
-        console.log(`Selected Event ID: ${id}`);
     };
 
     const handleCloseModal = () => {
@@ -36,11 +83,11 @@ const EventsPage: React.FC<HomePageProps> = () => {
     };
 
     const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-        setSearchParams({
-            page: value.toString(),
-            pageSize: pageSize.toString()
+        setSearchParams(prev => {
+            prev.set('page', value.toString());
+            return prev;
         });
-        window.scrollTo(0, 0);
+        // window.scrollTo(0, 0);
     }
 
     const selectedEvent = eventResponse?.items.find(e => e.id === selectedEventId) || null;
@@ -50,6 +97,13 @@ const EventsPage: React.FC<HomePageProps> = () => {
             <Typography variant="h3" gutterBottom sx={{ pt: 4 }}>
                 Upcoming Events
             </Typography>
+
+            <EventFilterBar
+                initialFromDate={fromDateParam || dayjs().format('YYYY-MM-DD')}
+                initialToDate={toDateParam}
+                onFilter={handleFilter}
+                onClear={handleClearFilter}
+            />
 
             {error && (
                 <Alert severity="error">Failed to load events. Please try again later.</Alert>

@@ -8,26 +8,25 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import GenericDialog from '../../../components/common/GenericDialog';
 import EventForm from './EventForm';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { EventData } from '../../../types/Event';
-import useSWR, { useSWRConfig } from 'swr';
+import useSWR from 'swr';
 import { fetcher, createEvent, deleteEvent, updateEvent, exportEvent } from '../../../services/EventApiService';
 import type { PaginatedResponse } from '../../../types/Pagination';
 import { useSnackbar } from 'notistack';
-import type { Dayjs } from 'dayjs';
+import dayjs, { type Dayjs } from 'dayjs';
 import { showApiError } from '../../../services/api';
 import fileDownload from 'js-file-download';
+import EventFilterBar from '../../Events/EventFilterBar';
 
 export default function EventTable() {
 
     const navigate = useNavigate();
 
     const [searchParams, setSearchParams] = useSearchParams();
-
-    const { mutate } = useSWRConfig();
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -36,18 +35,66 @@ export default function EventTable() {
         pageSize: parseInt(searchParams.get('pageSize') || '5', 10)
     };
 
-    const { data: eventResponse, error, isLoading } = useSWR<PaginatedResponse<EventData>>(
-        `/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`, // API's page starts at 1
+    const fromDateParam = searchParams.get('fromDate');
+    const toDateParam = searchParams.get('toDate');
+
+    const swrKey = useMemo(() => {
+        const params = new URLSearchParams();
+        params.append('page', (paginationModel.page + 1).toString()); // API starts at 1
+        params.append('pageSize', paginationModel.pageSize.toString());
+
+        const effectiveFromDate = fromDateParam || dayjs().format('YYYY-MM-DD');
+        params.append('fromDate', effectiveFromDate);
+
+        if (toDateParam) {
+            params.append('toDate', toDateParam);
+        }
+
+        return `/events/filter?${params.toString()}`;
+    }, [paginationModel, fromDateParam, toDateParam]);
+
+    const { data: eventResponse, error, isLoading, mutate } = useSWR<PaginatedResponse<EventData>>(
+        swrKey,
         fetcher,
         {
             keepPreviousData: true,
         }
     );
 
+    const handleFilter = (newFrom: string | null, newTo: string | null) => {
+        setSearchParams(prev => {
+            prev.set('page', '0'); // Reset to first page
+            
+            if (newFrom) {
+                prev.set('fromDate', newFrom);
+            } else {
+                prev.set('fromDate', dayjs().format('YYYY-MM-DD'));
+            }
+
+            if (newTo) {
+                prev.set('toDate', newTo);
+            } else {
+                prev.delete('toDate');
+            }
+            
+            return prev;
+        });
+    };
+
+    const handleClearFilter = () => {
+        setSearchParams(prev => {
+            prev.set('page', '0');
+            prev.delete('fromDate');
+            prev.delete('toDate');
+            return prev;
+        });
+    };
+
     const handlePaginationModelChange = (newModel: GridPaginationModel) => {
-        setSearchParams({
-            page: newModel.page.toString(),
-            pageSize: newModel.pageSize.toString()
+        setSearchParams(prev => {
+            prev.set('page', newModel.page.toString());
+            prev.set('pageSize', newModel.pageSize.toString());
+            return prev;
         });
     };
 
@@ -55,11 +102,7 @@ export default function EventTable() {
     const handleCreate = async (data: any) => {
         try {
             await createEvent(data);
-
-            mutate(
-                `/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
-            );
-
+            await mutate();
             enqueueSnackbar("Success!", {
                 autoHideDuration: 3000,
                 variant: "success",
@@ -76,11 +119,7 @@ export default function EventTable() {
     const handleEdit = async (id: number, data: any) => {
         try {
             await updateEvent(id, data);
-
-            mutate(
-                `/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
-            );
-
+            await mutate();
             enqueueSnackbar("Success!", {
                 autoHideDuration: 3000,
                 variant: "success",
@@ -95,11 +134,7 @@ export default function EventTable() {
     const handleDelete = async (id: number) => {
         try {
             await deleteEvent(id);
-
-            mutate(
-                `/events?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
-            );
-
+            await mutate();
             enqueueSnackbar("Success!", {
                 autoHideDuration: 3000,
                 variant: "success",
@@ -203,6 +238,16 @@ export default function EventTable() {
                 />
             </Box>
             <Divider />
+            
+            <Box sx={{ mt: 2 }}>
+                 <EventFilterBar 
+                    initialFromDate={fromDateParam || dayjs().format('YYYY-MM-DD')}
+                    initialToDate={toDateParam}
+                    onFilter={handleFilter}
+                    onClear={handleClearFilter}
+                />
+            </Box>
+
             <DataGrid
                 // Data
                 rows={eventResponse?.items || []}

@@ -16,7 +16,7 @@ import { ThemeModeProvider } from './theme/ThemeModeProvider'
 import EventsSessionsTable from './pages/Admin/SessionTable/EventsSessionTable'
 import { SnackbarProvider } from 'notistack';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import NotFoundPage from './pages/notFoundPage'
+import NotFoundPage from './pages/NotFoundPage'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
@@ -30,14 +30,14 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
-          { 
-            path: '/profile', 
+          {
+            path: '/profile',
             element: <UserProfilePage />,
             children: [
-               { index: true, element: <UserProfileOverview /> },
-               { path: 'edit', element: <EditProfilePage /> },
-               { path: 'password', element: <ChangePasswordPage /> }
-            ] 
+              { index: true, element: <UserProfileOverview /> },
+              { path: 'edit', element: <EditProfilePage /> },
+              { path: 'password', element: <ChangePasswordPage /> }
+            ]
           },
         ]
       },
