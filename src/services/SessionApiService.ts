@@ -66,3 +66,8 @@ export const unregisterFromSession = async (sessionId: number) => {
     const response = await api.delete(`/session/${sessionId}/registrations`);
     return response.data;
 }
+
+export const getSessionParticipants = async (sessionId: number, page: number = 1, pageSize: number = 10) => {
+    const response = await api.get(`/sessions/${sessionId}/participants?page=${page}&pageSize=${pageSize}`);
+    return response.data;
+}
