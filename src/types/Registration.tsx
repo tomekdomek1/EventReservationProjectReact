@@ -9,3 +9,15 @@ export interface RegistrationData {
     registrationStatus: number;
     session: EventSession;
 }
+
+export interface SessionParticipant {
+    registrationId: number;
+    userId: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    country: string;
+    registrationStatus: string;
+    registeredAt: string;
+}

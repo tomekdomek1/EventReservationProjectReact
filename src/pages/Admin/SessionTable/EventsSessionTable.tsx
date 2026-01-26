@@ -5,9 +5,10 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InfoIcon from '@mui/icons-material/Info';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'
-import PeopleIcon from '@mui/icons-material/People';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 import GenericDialog from '../../../components/common/GenericDialog';
+import SessionParticipantsDialog from './SessionParticipantsDialog';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { SessionForm } from './SessionForm';
 import type { EventSession } from '../../../types/Session';
@@ -147,7 +148,7 @@ export default function EventsSessionsTable() {
             headerName: 'Action',
             sortable: false,
             filterable: false,
-            width: 220,
+            width: 260,
             renderCell: (params) => {
                 const thisRow: EventSession = params.row;
                 const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -156,6 +157,11 @@ export default function EventsSessionsTable() {
 
                 return (
                     <div style={{ display: 'flex', gap: '8px' }}>
+                        <SessionParticipantsDialog
+                            sessionId={thisRow.id}
+                            sessionName={thisRow.name}
+                            currentReserved={thisRow.currentReserved}
+                        />
                         <GenericDialog
                             trigger={
                                 <IconButton onClick={onClick}>
@@ -189,7 +195,7 @@ export default function EventsSessionsTable() {
                             cancelText="Cancel"
                         />
                         <IconButton onClick={() => handleExport(thisRow.id)}>
-                            <PeopleIcon />
+                            <FileDownloadIcon />
                         </IconButton>
                     </div >
                 );
