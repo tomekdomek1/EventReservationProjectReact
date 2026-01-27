@@ -1,0 +1,262 @@
+{
+  "app": {
+    "title": "EventReservationApp"
+  },
+  "nav": {
+    "login": "Zaloguj się",
+    "register": "Rejestracja",
+    "logout": "Wyloguj",
+    "profile": "Profil"
+  },
+  "events": {
+    "upcoming_title": "Nadchodzące Wydarzenia",
+    "load_error": "Nie udało się pobrać wydarzeń. Spróbuj ponownie później.",
+    "no_events": "Nie znaleziono wydarzeń spełniających kryteria.",
+    "filter_bar": {
+      "search_placeholder": "Szukaj...",
+      "from_date": "Data Od",
+      "to_date": "Data Do",
+      "filter_btn": "Filtruj",
+      "clear_btn": "Wyczyść"
+    },
+    "details": {
+      "title": "Szczegóły Wydarzenia",
+      "location": "Lokalizacja",
+      "start_time": "Czas rozpoczęcia",
+      "end_time": "Czas zakończenia",
+      "coordinator_info": "Dane Koordynatora",
+      "name": "Imię i nazwisko",
+      "phone": "Telefon",
+      "email": "Email",
+      "sessions": "Sesje"
+    }
+  },
+  "sessions": {
+    "join": "Dołącz",
+    "leave": "Opuść",
+    "full": "Pełna",
+    "sign_in_to_join": "Zaloguj się aby dołączyć",
+    "free_spots": "{{count}} / {{total}} wolnych miejsc",
+    "duration_min": "{{minutes}} min",
+    "no_sessions": "Brak zaplanowanych sesji dla tego wydarzenia.",
+    "load_error": "Nie udało się pobrać sesji.",
+    "success_join": "Pomyślnie zarejestrowano na sesję",
+    "success_leave": "Pomyślnie wypisano z sesji",
+    "fail_join": "Rejestracja nie powiodła się",
+    "fail_leave": "Wypisanie nie powiodło się"
+  },
+  "auth": {
+    "login": {
+      "title": "Logowanie",
+      "email": "Email",
+      "password": "Hasło",
+      "remember_me": "Zapamiętaj mnie",
+      "submit": "Zaloguj",
+      "success": "Logowanie udane!",
+      "fail": "Logowanie nieudane"
+    },
+    "register": {
+      "title": "Rejestracja",
+      "email": "Email",
+      "first_name": "Imię",
+      "last_name": "Nazwisko",
+      "phone": "Numer Telefonu",
+      "country": "Kraj",
+      "password": "Hasło",
+      "confirm_password": "Potwierdź Hasło",
+      "submit": "Zarejestruj",
+      "success": "Rejestracja udana! Zaloguj się.",
+      "fail": "Rejestracja nieudana"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Panel Główny",
+      "subtitle": "Przegląd systemu rezerwacji wydarzeń",
+      "total_users": "Użytkownicy",
+      "total_events": "Wydarzenia",
+      "total_sessions": "Sesje",
+      "total_registrations": "Rejestracje",
+      "events_in_range": "Wydarzenia w zakresie",
+      "sessions_in_range": "Sesje w zakresie",
+      "activity_over_time": "Aktywność w czasie",
+      "activity_subtitle": "Dzienne wydarzenia, sesje i rejestracje",
+      "distribution": "Rozkład",
+      "distribution_subtitle": "Całkowity rozkład systemu",
+      "daily_registrations": "Dzienne Rejestracje",
+      "daily_registrations_subtitle": "Aktywność rejestracji na dzień",
+      "no_data": "Brak danych",
+      "load_fail": "Nie udało się pobrać statystyk",
+      "range_7d": "7 dni",
+      "range_30d": "30 dni",
+      "range_90d": "90 dni",
+      "range_365d": "1 rok"
+    },
+    "event_table": {
+      "title": "Lista wydarzeń",
+      "create_success": "Utworzono!",
+      "edit_success": "Sukces!",
+      "delete_success": "Sukces!",
+      "export_success": "Eksport udany!",
+      "export_fail": "Eksport nieudany",
+      "edit_error": "Wystąpił błąd podczas edycji wydarzenia",
+      "delete_confirm_title": "Czy jesteś pewien?",
+      "delete_confirm_desc": "Czy chcesz usunąć to wydarzenie? Tego nie można cofnąć.",
+      "delete_btn": "Usuń",
+      "cancel_btn": "Anuluj",
+      "columns": {
+        "id": "ID",
+        "name": "Nazwa",
+        "start_date": "Data rozpoczęcia",
+        "end_date": "Data zakończenia",
+        "location": "Lokalizacja",
+        "action": "Akcja"
+      }
+    },
+    "event_form": {
+      "create_title": "Utwórz wydarzenie",
+      "edit_title": "Edytuj wydarzenie",
+      "details_title": "Szczegóły wydarzenia",
+      "name": "Nazwa",
+      "name_placeholder": "Nazwa wydarzenia",
+      "description": "Opis",
+      "description_placeholder": "Lorem ipsum",
+      "start_date": "Data rozpoczęcia",
+      "end_date": "Data zakończenia",
+      "location": "Lokalizacja",
+      "location_placeholder": "Lokalizacja wydarzenia",
+      "overlapping_allowed": "Czy nakładanie sesji jest dozwolone?",
+      "event_email": "Email wydarzenia",
+      "event_email_placeholder": "Email wydarzenia",
+      "coordinator_header": "Dane koordynatora wydarzenia",
+      "coordinator_name": "Imię Koordynatora",
+      "coordinator_name_placeholder": "Imię koordynatora",
+      "coordinator_surname": "Nazwisko Koordynatora",
+      "coordinator_surname_placeholder": "Nazwisko koordynatora",
+      "coordinator_phone": "Telefon Koordynatora",
+      "coordinator_phone_placeholder": "Telefon koordynatora",
+      "submit_add": "Dodaj",
+      "submit_edit": "Edytuj"
+    },
+    "session_table": {
+      "title": "Lista sesji wydarzenia",
+      "create_success": "Sukces!",
+      "edit_success": "Sukces!",
+      "delete_success": "Sukces!",
+      "create_error": "Wystąpił błąd podczas tworzenia sesji",
+      "edit_error": "Wystąpił błąd podczas edycji sesji",
+      "delete_error": "Wystąpił błąd podczas usuwania sesji",
+      "export_success": "Sukces!",
+      "export_fail": "Eksport nieudany",
+      "delete_confirm_title": "Czy jesteś pewien?",
+      "delete_confirm_desc": "Czy chcesz usunąć tę sesję? Tego nie można cofnąć.",
+      "load_fail": "Nie udało się załadować sesji wydarzeń.",
+      "columns": {
+        "id": "ID",
+        "name": "Nazwa",
+        "start_time": "Czas rozpoczęcia",
+        "duration": "Czas trwania (min)",
+        "current_reserved": "Zarezerwowano",
+        "max_participants": "Maks. uczestników",
+        "action": "Akcja"
+      }
+    },
+    "session_form": {
+      "create_title": "Utwórz sesję",
+      "edit_title": "Edytuj sesję",
+      "details_title": "Szczegóły sesji",
+      "associated_event": "Powiązane wydarzenie:",
+      "event_name": "Nazwa: {{name}}",
+      "event_start": "Data rozpoczęcia: {{date}}",
+      "event_end": "Data zakończenia: {{date}}",
+      "event_loading": "Szczegóły wydarzenia niedostępne (Ładowanie...)",
+      "name": "Nazwa",
+      "name_placeholder": "Nazwa sesji",
+      "description": "Opis",
+      "description_placeholder": "Lorem ipsum",
+      "start_date": "Data rozpoczęcia",
+      "duration": "Czas trwania (minuty)",
+      "duration_placeholder": "Czas trwania sesji",
+      "max_participants": "Maks. uczestników",
+      "max_participants_placeholder": "Maks. uczestników",
+      "current_reserved": "Obecnie zarezerwowano",
+      "submit_add": "Dodaj",
+      "submit_edit": "Edytuj"
+    },
+    "participants_dialog": {
+      "title": "Uczestnicy",
+      "registered_count": "({{count}} zarejestrowanych)",
+      "load_fail": "Nie udało się pobrać uczestników.",
+      "no_participants": "Brak zarejestrowanych uczestników na tę sesję.",
+      "status": {
+        "pending": "Oczekujący",
+        "registered": "Zarejestrowany",
+        "cancelled": "Anulowany",
+        "unknown": "Nieznany"
+      }
+    },
+    "users_table": {
+      "title": "Lista użytkowników",
+      "email": "Email",
+      "first_name": "Imię",
+      "last_name": "Nazwisko",
+      "phone": "Telefon",
+      "country": "Kraj",
+      "role": "Rola",
+      "load_fail": "Nie udało się pobrać użytkowników"
+    }
+  },
+  "profile": {
+    "menu": {
+      "info": "Informacje",
+      "edit": "Edytuj Dane",
+      "password": "Zmień Hasło"
+    },
+    "info": {
+      "title": "Informacje o użytkowniku",
+      "load_fail": "Nie udało się pobrać informacji o profilu.",
+      "email": "Email:",
+      "full_name": "Imię i nazwisko:",
+      "phone": "Telefon:",
+      "country": "Kraj:"
+    },
+    "edit": {
+      "title": "Edytuj Profil",
+      "email": "Email",
+      "phone": "Numer Telefonu",
+      "first_name": "Imię",
+      "last_name": "Nazwisko",
+      "country": "Kraj",
+      "submit": "Zapisz Zmiany",
+      "success": "Profil zaktualizowany pomyślnie!",
+      "fail": "Nie udało się zaktualizować profilu",
+      "load_fail": "Nie udało się pobrać informacji o profilu.",
+      "back_btn": "Powrót do profilu"
+    },
+    "password": {
+      "title": "Zmień Hasło",
+      "current": "Obecne Hasło",
+      "new": "Nowe Hasło",
+      "confirm": "Potwierdź Nowe Hasło",
+      "submit": "Zmień Hasło",
+      "success": "Hasło zostało zmienione pomyślnie!",
+      "fail": "Nie udało się zmienić hasła"
+    },
+    "registrations": {
+      "title": "Moje Zarejestrowane Sesje",
+      "load_fail": "Nie udało się pobrać rejestracji.",
+      "upcoming_only": "Tylko nadchodzące",
+      "start_date": "Data od",
+      "end_date": "Data do",
+      "no_registrations": "Nie zarejestrowałeś się jeszcze na żadne sesje."
+    }
+  },
+  "not_found": {
+    "title": "Strona Nie Znaleziona",
+    "message": "Przepraszamy, strona której szukasz nie istnieje lub została przeniesiona.",
+    "button": "Wróć na stronę główną"
+  },
+  "footer": {
+    "copyright": "© 2026 Moja aplikacja."
+  }
+}

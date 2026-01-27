@@ -19,6 +19,7 @@ import useSWR from 'swr';
 import { getSessionParticipants } from '../../../services/SessionApiService';
 import type { SessionParticipant } from '../../../types/Registration';
 import type { PaginatedResponse } from '../../../types/Pagination';
+import { useTranslation } from 'react-i18next';
 
 interface SessionParticipantsDialogProps {
     sessionId: number;
@@ -27,6 +28,7 @@ interface SessionParticipantsDialogProps {
 }
 
 export default function SessionParticipantsDialog({ sessionId, sessionName, currentReserved }: SessionParticipantsDialogProps) {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const [page, setPage] = useState(1);
     const pageSize = 5;
@@ -69,13 +71,20 @@ export default function SessionParticipantsDialog({ sessionId, sessionName, curr
     };
 
     const getStatusLabel = (status: string | number) => {
-        if (typeof status === 'string') return status;
-        switch (status) {
-            case 0: return 'Pending';
-            case 1: return 'Registered';
-            case 2: return 'Cancelled';
-            default: return 'Unknown';
+        let statusKey = 'unknown';
+        
+        if (typeof status === 'string') {
+            statusKey = status.toLowerCase();
+        } else {
+            switch (status) {
+                case 0: statusKey = 'pending'; break;
+                case 1: statusKey = 'registered'; break;
+                case 2: statusKey = 'cancelled'; break;
+                default: statusKey = 'unknown';
+            }
         }
+        
+        return t(`admin.participants_dialog.status.${statusKey}`);
     };
 
     const getInitials = (firstName: string, lastName: string) => {
@@ -92,10 +101,10 @@ export default function SessionParticipantsDialog({ sessionId, sessionName, curr
                 <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box>
                         <Typography variant="h6" component="span">
-                            Participants
+                            {t('admin.participants_dialog.title')}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            {sessionName} ({currentReserved} registered)
+                            {sessionName} {t('admin.participants_dialog.registered_count', { count: currentReserved })}
                         </Typography>
                     </Box>
                     <IconButton onClick={handleClose} size="small">
@@ -114,13 +123,13 @@ export default function SessionParticipantsDialog({ sessionId, sessionName, curr
 
                     {error && (
                         <Alert severity="error" sx={{ mb: 2 }}>
-                            Failed to load participants.
+                            {t('admin.participants_dialog.load_fail')}
                         </Alert>
                     )}
 
                     {!isLoading && !error && data?.items.length === 0 && (
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 200 }}>
-                            <Typography color="text.secondary">No participants registered for this session.</Typography>
+                            <Typography color="text.secondary">{t('admin.participants_dialog.no_participants')}</Typography>
                         </Box>
                     )}
 

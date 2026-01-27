@@ -11,6 +11,7 @@ import { DateTimePickerElement } from "react-hook-form-mui/date-pickers";
 import type { CreateEventForm } from "./CreateEventForm";
 import { EventFormModel } from "../../../types/EventFormModel";
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useTranslation } from "react-i18next";
 
 type EventFormProps = {
     readonly?: boolean;
@@ -21,6 +22,7 @@ type EventFormProps = {
 
 
 export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubmit: parentSubmit }: EventFormProps): JSX.Element => {
+    const { t } = useTranslation();
 
     const formContext = useForm<CreateEventForm>({
         defaultValues: initialData ?? {
@@ -45,41 +47,41 @@ export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubm
             <Typography variant="h5" sx={{ textAlign: 'left', marginBottom: "25px" }}>
                 {(() => {
                     if (initialData && readonly) {
-                        return "Event details";
+                        return t('admin.event_form.details_title');
                     }
                     if (initialData) {
-                        return "Edit event";
+                        return t('admin.event_form.edit_title');
                     }
-                    return "Create event";
+                    return t('admin.event_form.create_title');
                 })()}
             </Typography>
 
             <Box sx={{ display: 'flex', flexDirection: "column", gap: 3 }}>
                 <TextFieldElement
                     id="name-input"
-                    label="Name"
+                    label={t('admin.event_form.name')}
                     name="name"
                     required
                     fullWidth
-                    placeholder="Event name"
+                    placeholder={t('admin.event_form.name_placeholder')}
                     disabled={readonly}
                 />
 
                 <TextFieldElement
                     id="description-input"
-                    label="Description"
+                    label={t('admin.event_form.description')}
                     name="description"
                     multiline
                     rows={5}
                     required
                     fullWidth
-                    placeholder="Lorem ipsum"
+                    placeholder={t('admin.event_form.description_placeholder')}
                     disabled={readonly}
                 />
 
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pl">
                     <DateTimePickerElement
-                        label="Start date"
+                        label={t('admin.event_form.start_date')}
                         name="startTime"
                         ampm={false}
                         disablePast
@@ -92,7 +94,7 @@ export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubm
 
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pl">
                     <DateTimePickerElement
-                        label="End date"
+                        label={t('admin.event_form.end_date')}
                         name="endTime"
                         ampm={false}
                         disablePast
@@ -105,17 +107,17 @@ export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubm
 
                 <TextFieldElement
                     id="location-input"
-                    label="Location"
+                    label={t('admin.event_form.location')}
                     name="location"
                     required
                     fullWidth
-                    placeholder="Event's location"
+                    placeholder={t('admin.event_form.location_placeholder')}
                     disabled={readonly}
                 />
 
                 <FormGroup sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                     <FormLabel component="legend">
-                        Is session overlapping allowed?
+                        {t('admin.event_form.overlapping_allowed')}
                     </FormLabel>
                     <SwitchElement
                         name="isOverLappingAllowed"
@@ -127,45 +129,45 @@ export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubm
 
                 <TextFieldElement
                     id="eventemail-input"
-                    label="Event email"
+                    label={t('admin.event_form.event_email')}
                     name="eventEmail"
                     required
                     fullWidth
-                    placeholder="Event's email"
+                    placeholder={t('admin.event_form.event_email_placeholder')}
                     disabled={readonly}
                 />
 
                 <Divider />
-                <FormLabel sx={{ mr: "auto" }}>Event Coordinator details</FormLabel>
+                <FormLabel sx={{ mr: "auto" }}>{t('admin.event_form.coordinator_header')}</FormLabel>
 
                 <Box sx={{ display: "flex", flexDirection: "row", gap: 2, width: "100%" }}>
                     <TextFieldElement
                         id="coordinatorName-input"
-                        label="Coordinator Name"
+                        label={t('admin.event_form.coordinator_name')}
                         name="coordinatorName"
                         required
                         fullWidth
-                        placeholder="Coordinator name"
+                        placeholder={t('admin.event_form.coordinator_name_placeholder')}
                         disabled={readonly}
                     />
 
                     <TextFieldElement
                         id="coordinatorSurname-input"
-                        label="Coordinator Surname"
+                        label={t('admin.event_form.coordinator_surname')}
                         name="coordinatorSurname"
                         required
                         fullWidth
-                        placeholder="Coordinator surname"
+                        placeholder={t('admin.event_form.coordinator_surname_placeholder')}
                         disabled={readonly}
                     />
 
                     <TextFieldElement
                         id="coordinatorPhone-input"
-                        label="Coordinator phone"
+                        label={t('admin.event_form.coordinator_phone')}
                         name="coordinatorPhone"
                         required
                         fullWidth
-                        placeholder="Coordinator phone"
+                        placeholder={t('admin.event_form.coordinator_phone_placeholder')}
                         disabled={readonly}
                     />
                 </Box>
@@ -173,9 +175,9 @@ export const EventForm = ({ readonly = false, initialData, onDialogClose, onSubm
                     <Button variant="contained" type="submit">
                         {(() => {
                             if (initialData) {
-                                return "Edit";
+                                return t('admin.event_form.submit_edit');
                             }
-                            return "Add";
+                            return t('admin.event_form.submit_add');
                         })()}
                     </Button>
                 )}

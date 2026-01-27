@@ -20,8 +20,10 @@ import { useSnackbar } from 'notistack';
 import { showApiError } from '../../../services/api';
 import type { EventData } from '../../../types/Event';
 import fileDownload from 'js-file-download';
+import { useTranslation } from 'react-i18next';
 
 export default function EventsSessionsTable() {
+    const { t } = useTranslation();
     const { id } = useParams<{ id: string }>();
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -69,13 +71,13 @@ export default function EventsSessionsTable() {
                 `/event/${id}/sessions?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
             );
 
-            enqueueSnackbar("Success!", {
+            enqueueSnackbar(t('admin.session_table.create_success'), {
                 autoHideDuration: 3000,
                 variant: "success",
             });
         } catch (error) {
             console.error(error);
-            showApiError(error, "Error occured while creating session");
+            showApiError(error, t('admin.session_table.create_error'));
         }
     };
 
@@ -94,13 +96,13 @@ export default function EventsSessionsTable() {
                 `/event/${id}/sessions?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
             );
 
-            enqueueSnackbar("Success!", {
+            enqueueSnackbar(t('admin.session_table.edit_success'), {
                 autoHideDuration: 3000,
                 variant: "success",
             });
         } catch (error) {
             console.error(error);
-            showApiError(error, "Error occured while editing session");
+            showApiError(error, t('admin.session_table.edit_error'));
         }
     };
 
@@ -113,13 +115,13 @@ export default function EventsSessionsTable() {
                 `/event/${id}/sessions?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`
             );
 
-            enqueueSnackbar("Success!", {
+            enqueueSnackbar(t('admin.session_table.delete_success'), {
                 autoHideDuration: 3000,
                 variant: "success",
             });
         } catch (error) {
             console.error(error);
-            showApiError(error, "Error occured while deleting session");
+            showApiError(error, t('admin.session_table.delete_error'));
         }
     };
 
@@ -129,23 +131,23 @@ export default function EventsSessionsTable() {
 
             fileDownload(response.data, `session_export_${sessionId}.json`);
 
-            enqueueSnackbar("Success!", { variant: "success" });
+            enqueueSnackbar(t('admin.session_table.export_success'), { variant: "success" });
         } catch (error) {
-            showApiError(error, "Export failed");
+            showApiError(error, t('admin.session_table.export_fail'));
         }
     };
 
 
     const eventSessionColumn: GridColDef[] = [
-        { field: 'id', headerName: 'ID', width: 80 },
-        { field: 'name', headerName: 'Name', flex: 2, minWidth: 150 },
-        { field: 'startTime', headerName: 'Start Time', flex: 1.5, minWidth: 150 },
-        { field: 'duration', headerName: 'Duration (min)', flex: 1, minWidth: 120 },
-        { field: 'currentReserved', headerName: 'Current Reserved', flex: 1, minWidth: 140 },
-        { field: 'maxParticipants', headerName: 'Max Participants', flex: 1, minWidth: 140 },
+        { field: 'id', headerName: t('admin.session_table.columns.id'), width: 80 },
+        { field: 'name', headerName: t('admin.session_table.columns.name'), flex: 2, minWidth: 150 },
+        { field: 'startTime', headerName: t('admin.session_table.columns.start_time'), flex: 1.5, minWidth: 150 },
+        { field: 'duration', headerName: t('admin.session_table.columns.duration'), flex: 1, minWidth: 120 },
+        { field: 'currentReserved', headerName: t('admin.session_table.columns.current_reserved'), flex: 1, minWidth: 140 },
+        { field: 'maxParticipants', headerName: t('admin.session_table.columns.max_participants'), flex: 1, minWidth: 140 },
         {
             field: 'action',
-            headerName: 'Action',
+            headerName: t('admin.session_table.columns.action'),
             sortable: false,
             filterable: false,
             width: 260,
@@ -186,13 +188,13 @@ export default function EventsSessionsTable() {
                                     <DeleteIcon />
                                 </IconButton>
                             }
-                            title="Are you sure?"
-                            content="Do you want to delete this session? It cannot be reverted."
+                            title={t('admin.session_table.delete_confirm_title')}
+                            content={t('admin.session_table.delete_confirm_desc')}
                             onConfirm={() => {
                                 handleDelete(thisRow.id)
                             }}
-                            confirmText="Delete"
-                            cancelText="Cancel"
+                            confirmText={t('admin.event_table.delete_btn')}
+                            cancelText={t('admin.event_table.cancel_btn')}
                         />
                         <IconButton onClick={() => handleExport(thisRow.id)}>
                             <FileDownloadIcon />
@@ -206,7 +208,7 @@ export default function EventsSessionsTable() {
     if (error) {
         return (
             <Box sx={{ p: 5 }}>
-                <Alert severity="error">Failed to load events sessions.</Alert>
+                <Alert severity="error">{t('admin.session_table.load_fail')}</Alert>
             </Box>
         );
     }
@@ -215,7 +217,7 @@ export default function EventsSessionsTable() {
     return (
         <Box sx={{ display: 'flex', flexDirection: "column", width: "auto", maxWidth: '100%', margin: 'auto', p: 5 }}>
             <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", alignItems: 'center', mb: 2 }}>
-                <Typography variant='h5'>Event's session list</Typography>
+                <Typography variant='h5'>{t('admin.session_table.title')}</Typography>
                 <GenericDialog
                     trigger={<IconButton>
                         <AddCircleOutlineIcon />

@@ -7,12 +7,14 @@ import type { PaginatedResponse } from '../../../types/Pagination';
 import type { RegistrationData } from '../../../types/Registration';
 import EventSessionCard from './EventSessionCard';
 import { useAuthStore } from '../../../store/authStore';
+import { useTranslation } from 'react-i18next';
 
 interface EventSessionListProps {
     eventId: number;
 }
 
 const EventSessionList: React.FC<EventSessionListProps> = ({ eventId }) => {
+    const { t } = useTranslation();
     const user = useAuthStore((state) => state.user);
 
     // Fetch sessions for the event
@@ -57,7 +59,7 @@ const EventSessionList: React.FC<EventSessionListProps> = ({ eventId }) => {
     if (sessionsError) {
         return (
             <Alert severity="error" sx={{ mt: 2 }}>
-                Failed to load sessions.
+                {t('sessions.load_error')}
             </Alert>
         );
     }
@@ -65,7 +67,7 @@ const EventSessionList: React.FC<EventSessionListProps> = ({ eventId }) => {
     if (!sessionsData?.items || sessionsData.items.length === 0) {
         return (
             <Typography variant="body1" sx={{ mt: 2, fontStyle: 'italic', color: 'text.secondary' }}>
-                No sessions planned for this event.
+                {t('sessions.no_sessions')}
             </Typography>
         );
     }

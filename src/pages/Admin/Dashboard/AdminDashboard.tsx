@@ -25,10 +25,12 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import useSWR from 'swr';
 import { getStatistics } from "../../../services/StatisticsApiService";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 type DateRangeType = '7d' | '30d' | '90d' | '365d';
 
 const AdminDashboard = (): JSX.Element => {
+    const { t } = useTranslation();
     const theme = useTheme();
     const [dateRange, setDateRange] = useState<DateRangeType>('30d');
 
@@ -78,7 +80,7 @@ const AdminDashboard = (): JSX.Element => {
     if (error) {
         return (
             <Box sx={{ p: 3 }}>
-                <Typography color="error">Failed to load statistics</Typography>
+                <Typography color="error">{t('admin.dashboard.load_fail')}</Typography>
             </Box>
         );
     }
@@ -94,35 +96,35 @@ const AdminDashboard = (): JSX.Element => {
 
     // Pie chart data for distribution
     const pieData = [
-        { id: 0, value: summary?.totalEvents || 0, label: 'Events', color: theme.palette.primary.main },
-        { id: 1, value: summary?.totalSessions || 0, label: 'Sessions', color: theme.palette.secondary.main },
-        { id: 2, value: summary?.totalRegistrations || 0, label: 'Registrations', color: theme.palette.success.main },
+        { id: 0, value: summary?.totalEvents || 0, label: t('admin.dashboard.total_events'), color: theme.palette.primary.main },
+        { id: 1, value: summary?.totalSessions || 0, label: t('admin.dashboard.total_sessions'), color: theme.palette.secondary.main },
+        { id: 2, value: summary?.totalRegistrations || 0, label: t('admin.dashboard.total_registrations'), color: theme.palette.success.main },
     ];
 
     const summaryCards = [
         {
-            title: 'Total Users',
+            title: t('admin.dashboard.total_users'),
             value: summary?.totalUsers || 0,
             icon: <PeopleIcon sx={{ fontSize: 32 }} />,
             color: theme.palette.primary.main,
             bgColor: alpha(theme.palette.primary.main, 0.1),
         },
         {
-            title: 'Total Events',
+            title: t('admin.dashboard.total_events'),
             value: summary?.totalEvents || 0,
             icon: <EventIcon sx={{ fontSize: 32 }} />,
             color: theme.palette.secondary.main,
             bgColor: alpha(theme.palette.secondary.main, 0.1),
         },
         {
-            title: 'Total Sessions',
+            title: t('admin.dashboard.total_sessions'),
             value: summary?.totalSessions || 0,
             icon: <ScheduleIcon sx={{ fontSize: 32 }} />,
             color: theme.palette.warning.main,
             bgColor: alpha(theme.palette.warning.main, 0.1),
         },
         {
-            title: 'Total Registrations',
+            title: t('admin.dashboard.total_registrations'),
             value: summary?.totalRegistrations || 0,
             icon: <ConfirmationNumberIcon sx={{ fontSize: 32 }} />,
             color: theme.palette.success.main,
@@ -132,13 +134,13 @@ const AdminDashboard = (): JSX.Element => {
 
     const rangeCards = [
         {
-            title: 'Events in Range',
+            title: t('admin.dashboard.events_in_range'),
             value: summary?.eventsInRange || 0,
             icon: <CalendarTodayIcon sx={{ fontSize: 26 }} />,
             color: theme.palette.info.main,
         },
         {
-            title: 'Sessions in Range',
+            title: t('admin.dashboard.sessions_in_range'),
             value: summary?.sessionsInRange || 0,
             icon: <TrendingUpIcon sx={{ fontSize: 26 }} />,
             color: theme.palette.warning.main,
@@ -151,10 +153,10 @@ const AdminDashboard = (): JSX.Element => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                 <Box>
                     <Typography variant="h5" fontWeight="bold" gutterBottom>
-                        Dashboard
+                        {t('admin.dashboard.title')}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Overview of your event reservation system
+                        {t('admin.dashboard.subtitle')}
                     </Typography>
                 </Box>
                 
@@ -164,10 +166,10 @@ const AdminDashboard = (): JSX.Element => {
                     onChange={handleDateRangeChange}
                     size="small"
                 >
-                    <ToggleButton value="7d">7 Days</ToggleButton>
-                    <ToggleButton value="30d">30 Days</ToggleButton>
-                    <ToggleButton value="90d">90 Days</ToggleButton>
-                    <ToggleButton value="365d">1 Year</ToggleButton>
+                    <ToggleButton value="7d">{t('admin.dashboard.range_7d')}</ToggleButton>
+                    <ToggleButton value="30d">{t('admin.dashboard.range_30d')}</ToggleButton>
+                    <ToggleButton value="90d">{t('admin.dashboard.range_90d')}</ToggleButton>
+                    <ToggleButton value="365d">{t('admin.dashboard.range_365d')}</ToggleButton>
                 </ToggleButtonGroup>
             </Box>
 
@@ -255,10 +257,10 @@ const AdminDashboard = (): JSX.Element => {
                         }}
                     >
                         <Typography variant="subtitle1" fontWeight="600" gutterBottom>
-                            Activity Over Time
+                            {t('admin.dashboard.activity_over_time')}
                         </Typography>
                         <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: 'block' }}>
-                            Daily events, sessions, and registrations
+                            {t('admin.dashboard.activity_subtitle')}
                         </Typography>
                         
                         {dailyData.length > 0 ? (
@@ -267,19 +269,19 @@ const AdminDashboard = (): JSX.Element => {
                                 series={[
                                     { 
                                         data: eventsData, 
-                                        label: 'Events',
+                                        label: t('admin.dashboard.total_events'),
                                         color: theme.palette.primary.main,
                                         curve: 'linear'
                                     },
                                     { 
                                         data: sessionsData, 
-                                        label: 'Sessions',
+                                        label: t('admin.dashboard.total_sessions'),
                                         color: theme.palette.secondary.main,
                                         curve: 'linear'
                                     },
                                     { 
                                         data: registrationsData, 
-                                        label: 'Registrations',
+                                        label: t('admin.dashboard.total_registrations'),
                                         color: theme.palette.success.main,
                                         curve: 'linear'
                                     },
@@ -292,7 +294,7 @@ const AdminDashboard = (): JSX.Element => {
                             />
                         ) : (
                             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 280 }}>
-                                <Typography color="text.secondary">No data available</Typography>
+                                <Typography color="text.secondary">{t('admin.dashboard.no_data')}</Typography>
                             </Box>
                         )}
                     </Paper>
@@ -310,10 +312,10 @@ const AdminDashboard = (): JSX.Element => {
                         }}
                     >
                         <Typography variant="subtitle1" fontWeight="600" gutterBottom>
-                            Distribution
+                            {t('admin.dashboard.distribution')}
                         </Typography>
                         <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: 'block' }}>
-                            Total system distribution
+                            {t('admin.dashboard.distribution_subtitle')}
                         </Typography>
                         
                         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -346,10 +348,10 @@ const AdminDashboard = (): JSX.Element => {
                         }}
                     >
                         <Typography variant="subtitle1" fontWeight="600" gutterBottom>
-                            Daily Registrations
+                            {t('admin.dashboard.daily_registrations')}
                         </Typography>
                         <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: 'block' }}>
-                            Registration activity per day
+                            {t('admin.dashboard.daily_registrations_subtitle')}
                         </Typography>
                         
                         {dailyData.length > 0 ? (
@@ -358,7 +360,7 @@ const AdminDashboard = (): JSX.Element => {
                                 series={[
                                     { 
                                         data: registrationsData, 
-                                        label: 'Registrations',
+                                        label: t('admin.dashboard.total_registrations'),
                                         color: theme.palette.success.main 
                                     },
                                 ]}
@@ -370,7 +372,7 @@ const AdminDashboard = (): JSX.Element => {
                             />
                         ) : (
                             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 240 }}>
-                                <Typography color="text.secondary">No data available</Typography>
+                                <Typography color="text.secondary">{t('admin.dashboard.no_data')}</Typography>
                             </Box>
                         )}
                     </Paper>

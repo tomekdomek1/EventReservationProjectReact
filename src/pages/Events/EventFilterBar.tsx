@@ -4,6 +4,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import dayjs, { Dayjs } from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 interface EventFilterBarProps {
     initialFromDate: string | null;
@@ -20,6 +21,7 @@ const EventFilterBar: React.FC<EventFilterBarProps> = ({
     onFilter, 
     onClear 
 }) => {
+    const { t } = useTranslation();
     const [fromDate, setFromDate] = useState<Dayjs | null>(initialFromDate ? dayjs(initialFromDate) : null);
     const [toDate, setToDate] = useState<Dayjs | null>(initialToDate ? dayjs(initialToDate) : null);
     const [search, setSearch] = useState<string>(initialSearch || '');
@@ -47,7 +49,7 @@ const EventFilterBar: React.FC<EventFilterBarProps> = ({
         <Paper sx={{ p: 2, mb: 3 }} elevation={1}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
                 <TextField
-                    label="Search..."
+                    label={t('events.filter_bar.search_placeholder')}
                     variant="outlined"
                     size="small"
                     value={search}
@@ -55,7 +57,7 @@ const EventFilterBar: React.FC<EventFilterBarProps> = ({
                     fullWidth
                 />
                 <DatePicker
-                    label="From Date"
+                    label={t('events.filter_bar.from_date')}
                     value={fromDate}
                     onChange={(newValue) => setFromDate(newValue)}
                     slotProps={{ 
@@ -64,7 +66,7 @@ const EventFilterBar: React.FC<EventFilterBarProps> = ({
                     }}
                 />
                 <DatePicker
-                    label="To Date"
+                    label={t('events.filter_bar.to_date')}
                     value={toDate}
                     onChange={(newValue) => setToDate(newValue)}
                     slotProps={{ 
@@ -81,7 +83,7 @@ const EventFilterBar: React.FC<EventFilterBarProps> = ({
                         fullWidth
                         sx={{ minWidth: '100px' }}
                     >
-                        Filter
+                        {t('events.filter_bar.filter_btn')}
                     </Button>
                     <Button 
                         variant="outlined" 
@@ -91,7 +93,7 @@ const EventFilterBar: React.FC<EventFilterBarProps> = ({
                         fullWidth
                         sx={{ minWidth: '100px' }}
                     >
-                        Clear
+                        {t('events.filter_bar.clear_btn')}
                     </Button>
                 </Box>
             </Stack>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid, Box, Typography } from '@mui/material';
 import EventCard from './EventCard';
 import type { EventData } from '../../types/Event';
+import { useTranslation } from 'react-i18next';
 
 interface EventListProps {
     events: EventData[];
@@ -9,11 +10,13 @@ interface EventListProps {
 }
 
 const EventList: React.FC<EventListProps> = ({ events, onSelectEvent }) => {
+    const { t } = useTranslation();
+
     if (events.length === 0) {
         return (
             <Box sx={{ py: 8, textAlign: 'center' }}>
                 <Typography variant="h6" color="text.secondary">
-                    No events found matching your criteria.
+                    {t('events.no_events')}
                 </Typography>
             </Box>
         );

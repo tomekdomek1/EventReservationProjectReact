@@ -10,8 +10,10 @@ import { loginUser } from "../../services/AuthApiService";
 import { showApiError } from "../../services/api";
 import { useAuthStore } from "../../store/authStore";
 import type { LoginRequest, DecodedToken, UserData } from "../../types/Auth";
+import { useTranslation } from "react-i18next";
 
 const LoginScreen = (): JSX.Element => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
     const login = useAuthStore((state) => state.login);
@@ -42,26 +44,26 @@ const LoginScreen = (): JSX.Element => {
 
                 login(token, userData);
 
-                enqueueSnackbar("Login successful!", { variant: "success" });
+                enqueueSnackbar(t('auth.login.success'), { variant: "success" });
                 navigate("/");
             }
         } catch (error) {
             console.error(error);
-            showApiError(error, "Login failed");
+            showApiError(error, t('auth.login.fail'));
         }
     };
 
     return (
         <Paper sx={{ display: 'flex', flexDirection: "column", width: 400, maxWidth: '100%', margin: 'auto', p: 5, mt: 5 }} elevation={4}>
             <Typography variant="h5" gutterBottom sx={{ textAlign: 'left', marginBottom: "25px" }}>
-                Login
+                {t('auth.login.title')}
             </Typography>
 
             <FormContainer formContext={formContext} onSuccess={onSubmit}>
                 <Box sx={{ display: 'flex', flexDirection: "column", gap: 3 }}>
                     <TextFieldElement
                         name="email"
-                        label="Email"
+                        label={t('auth.login.email')}
                         type="email"
                         required
                         fullWidth
@@ -69,7 +71,7 @@ const LoginScreen = (): JSX.Element => {
 
                     <TextFieldElement
                         name="password"
-                        label="Password"
+                        label={t('auth.login.password')}
                         type="password"
                         required
                         fullWidth
@@ -77,11 +79,11 @@ const LoginScreen = (): JSX.Element => {
 
                     <CheckboxElement
                         name="rememberMe"
-                        label="Remember me"
+                        label={t('auth.login.remember_me')}
                     />
 
                     <Button variant="contained" type="submit" fullWidth size="large">
-                        Login
+                        {t('auth.login.submit')}
                     </Button>
                 </Box>
             </FormContainer>

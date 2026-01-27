@@ -21,9 +21,10 @@ import dayjs, { type Dayjs } from 'dayjs';
 import { showApiError } from '../../../services/api';
 import fileDownload from 'js-file-download';
 import EventFilterBar from '../../Events/EventFilterBar';
+import { useTranslation } from 'react-i18next';
 
 export default function EventTable() {
-
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -84,8 +85,6 @@ export default function EventTable() {
 
             if (newTo) {
                 prev.set('toDate', newTo);
-            } else {
-                prev.delete('toDate');
             }
             
             return prev;
@@ -115,13 +114,13 @@ export default function EventTable() {
         try {
             await createEvent(data);
             await mutate();
-            enqueueSnackbar("Success!", {
+            enqueueSnackbar(t('admin.event_table.create_success'), {
                 autoHideDuration: 3000,
                 variant: "success",
             });
         } catch (error) {
             console.error(error);
-            showApiError(error, "Wystąpił błąd podczas edycji wydarzenia");
+            showApiError(error, t('admin.event_table.edit_error'));
         }
     };
 
@@ -132,13 +131,13 @@ export default function EventTable() {
         try {
             await updateEvent(id, data);
             await mutate();
-            enqueueSnackbar("Success!", {
+            enqueueSnackbar(t('admin.event_table.edit_success'), {
                 autoHideDuration: 3000,
                 variant: "success",
             });
         } catch (error) {
             console.error(error);
-            showApiError(error, "Wystąpił błąd podczas edycji wydarzenia");
+            showApiError(error, t('admin.event_table.edit_error'));
         }
     };
 
@@ -147,13 +146,13 @@ export default function EventTable() {
         try {
             await deleteEvent(id);
             await mutate();
-            enqueueSnackbar("Success!", {
+            enqueueSnackbar(t('admin.event_table.delete_success'), {
                 autoHideDuration: 3000,
                 variant: "success",
             });
         } catch (error) {
             console.error(error);
-            showApiError(error, "Wystąpił błąd podczas edycji wydarzenia");
+            showApiError(error, t('admin.event_table.edit_error'));
         }
     };
 
@@ -162,26 +161,26 @@ export default function EventTable() {
         try {
             const response = await exportEvent(eventId);
             fileDownload(response.data, `event_${eventName.replace(/\s+/g, '_')}_${eventId}.json`);
-            enqueueSnackbar("Export successful!", {
+            enqueueSnackbar(t('admin.event_table.export_success'), {
                 autoHideDuration: 3000,
                 variant: "success",
             });
         } catch (error) {
             console.error(error);
-            showApiError(error, "Export failed");
+            showApiError(error, t('admin.event_table.export_fail'));
         }
     };
 
 
     const eventColumn: GridColDef[] = [
-        { field: 'id', headerName: "ID", flex: 0.5, minWidth: 70 },
-        { field: 'name', headerName: "Name", flex: 1.5, minWidth: 150 },
-        { field: 'startTime', headerName: "Start date", flex: 1, minWidth: 120, valueFormatter: (value: Dayjs) => value?.format('DD/MM/YYYY HH:mm') },
-        { field: 'endTime', headerName: "End Date", flex: 1, minWidth: 120, valueFormatter: (value: Dayjs) => value?.format('DD/MM/YYYY HH:mm') },
-        { field: 'location', headerName: "Location", flex: 1, minWidth: 500 },
+        { field: 'id', headerName: t('admin.event_table.columns.id'), flex: 0.5, minWidth: 70 },
+        { field: 'name', headerName: t('admin.event_table.columns.name'), flex: 1.5, minWidth: 150 },
+        { field: 'startTime', headerName: t('admin.event_table.columns.start_date'), flex: 1, minWidth: 120, valueFormatter: (value: Dayjs) => value?.format('DD/MM/YYYY HH:mm') },
+        { field: 'endTime', headerName: t('admin.event_table.columns.end_date'), flex: 1, minWidth: 120, valueFormatter: (value: Dayjs) => value?.format('DD/MM/YYYY HH:mm') },
+        { field: 'location', headerName: t('admin.event_table.columns.location'), flex: 1, minWidth: 500 },
         {
             field: "action",
-            headerName: "Action",
+            headerName: t('admin.event_table.columns.action'),
             sortable: false,
             flex: 1.2,
             filterable: false,
@@ -208,11 +207,11 @@ export default function EventTable() {
 
                         <GenericDialog
                             trigger={<IconButton onClick={onClick}><DeleteIcon /></IconButton>}
-                            title={"Are you sure?"}
-                            content={"Do you want delete this event? It cannot be reverted."}
+                            title={t('admin.event_table.delete_confirm_title')}
+                            content={t('admin.event_table.delete_confirm_desc')}
                             onConfirm={() => handleDelete(thisRow.id)}
-                            confirmText='Delete'
-                            cancelText='Cancel'
+                            confirmText={t('admin.event_table.delete_btn')}
+                            cancelText={t('admin.event_table.cancel_btn')}
                         />
                         <IconButton onClick={() => handleExport(thisRow.id, thisRow.name)}>
                             <FileDownloadIcon />
@@ -229,7 +228,7 @@ export default function EventTable() {
     if (error) {
         return (
             <Box sx={{ p: 5 }}>
-                <Alert severity="error">Failed to load events.</Alert>
+                <Alert severity="error">{t('events.load_error')}</Alert>
             </Box>
         );
     }
@@ -237,14 +236,14 @@ export default function EventTable() {
     return (
         <Box sx={{ display: 'flex', flexDirection: "column", width: "auto", maxWidth: '100%', margin: 'auto', p: 5 }}>
             <Box sx={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", alignItems: 'center', mb: 2 }}>
-                <Typography variant='h5'>Event list</Typography>
+                <Typography variant='h5'>{t('admin.event_table.title')}</Typography>
                 <GenericDialog
                     trigger={<IconButton>
                         <AddCircleOutlineIcon />
                     </IconButton>}
                     content={<EventForm onSubmit={handleCreate} />}
                     onConfirm={() => {
-                        alert("Created!")
+                        alert(t('admin.event_table.create_success'))
                     }}
                     hideActions
                 />

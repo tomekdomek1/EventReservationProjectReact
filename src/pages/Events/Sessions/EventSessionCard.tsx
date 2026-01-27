@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { registerForSession, unregisterFromSession } from '../../../services/SessionApiService';
 import { useSnackbar } from 'notistack';
 import { showApiError } from '../../../services/api';
+import { useTranslation } from 'react-i18next';
 
 interface EventSessionCardProps {
     session: EventSession;
@@ -16,6 +17,7 @@ interface EventSessionCardProps {
 }
 
 const EventSessionCard: React.FC<EventSessionCardProps> = ({ session, isRegistered, onStatusChange }) => {
+    const { t } = useTranslation();
     const user = useAuthStore((state) => state.user);
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
@@ -34,15 +36,15 @@ const EventSessionCard: React.FC<EventSessionCardProps> = ({ session, isRegister
         try {
             if (isRegistered) {
                 await unregisterFromSession(session.id);
-                enqueueSnackbar('Successfully unregistered from session', { variant: 'success' });
+                enqueueSnackbar(t('sessions.success_leave'), { variant: 'success' });
             } else {
                 await registerForSession(session.id);
-                enqueueSnackbar('Successfully registered for session', { variant: 'success' });
+                enqueueSnackbar(t('sessions.success_join'), { variant: 'success' });
             }
             onStatusChange();
         } catch (error) {
             console.error(error);
-            showApiError(error, isRegistered ? "Failed to unregister" : "Failed to register");
+            showApiError(error, isRegistered ? t('sessions.fail_leave') : t('sessions.fail_join'));
         } finally {
             setLoading(false);
         }
@@ -59,7 +61,7 @@ const EventSessionCard: React.FC<EventSessionCardProps> = ({ session, isRegister
                         <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 1, color: 'text.secondary' }}>
                             <AccessTimeIcon fontSize="small" sx={{ mr: 0.5 }} />
                             <Typography variant="body2">
-                                {session.startTime.format('HH:mm')} ({session.duration} min)
+                                {session.startTime.format('HH:mm')} ({t('sessions.duration_min', { minutes: session.duration })})
                             </Typography>
                         </Box>
                         {session.description && (
@@ -70,7 +72,7 @@ const EventSessionCard: React.FC<EventSessionCardProps> = ({ session, isRegister
                         <Box sx={{ display: 'flex', alignItems: 'center', color: isFull && !isRegistered ? 'error.main' : 'success.main' }}>
                             <PersonIcon fontSize="small" sx={{ mr: 0.5 }} />
                             <Typography variant="body2" fontWeight="bold">
-                                {freeSpots} / {session.maxParticipants} free spots
+                                {t('sessions.free_spots', { count: freeSpots, total: session.maxParticipants })}
                             </Typography>
                         </Box>
                     </Box>
@@ -86,13 +88,13 @@ const EventSessionCard: React.FC<EventSessionCardProps> = ({ session, isRegister
                             {loading ? (
                                 <CircularProgress size={24} color="inherit" />
                             ) : isRegistered ? (
-                                "Leave"
+                                t('sessions.leave')
                             ) : !user ? (
-                                "Sign in to join"
+                                t('sessions.sign_in_to_join')
                             ) : isFull ? (
-                                "Full"
+                                t('sessions.full')
                             ) : (
-                                "Join"
+                                t('sessions.join')
                             )}
                         </Button>
                     </Box>

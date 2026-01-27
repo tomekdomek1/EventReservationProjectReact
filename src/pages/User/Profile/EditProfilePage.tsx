@@ -11,8 +11,10 @@ import { UpdateProfileSchema } from "../../../types/AuthFormModel";
 import { getUserProfile, updateUserProfile } from "../../../services/UserApiService";
 import { showApiError } from "../../../services/api";
 import type { UserProfile } from "../../../types/User";
+import { useTranslation } from "react-i18next";
 
 export const EditProfilePage = (): JSX.Element => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
     
@@ -46,11 +48,11 @@ export const EditProfilePage = (): JSX.Element => {
     const onSubmit = async (data: UserProfile) => {
         try {
             await updateUserProfile(data);
-            enqueueSnackbar("Profile updated successfully!", { variant: "success" });
+            enqueueSnackbar(t('profile.edit.success'), { variant: "success" });
             navigate("/profile");
         } catch (error) {
             console.error(error);
-            showApiError(error, "Failed to update profile");
+            showApiError(error, t('profile.edit.fail'));
         }
     };
 
@@ -65,9 +67,9 @@ export const EditProfilePage = (): JSX.Element => {
     if (error) {
          return (
             <Box>
-                <Typography color="error">Failed to load profile information.</Typography>
+                <Typography color="error">{t('profile.edit.load_fail')}</Typography>
                 <Button onClick={() => navigate("/profile")} sx={{ mt: 2 }}>
-                    Back to Profile
+                    {t('profile.edit.back_btn')}
                 </Button>
             </Box>
         );
@@ -78,7 +80,7 @@ export const EditProfilePage = (): JSX.Element => {
             <Paper elevation={0} variant="outlined" sx={{ p: 4, borderRadius: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                     <EditIcon color="primary" sx={{ mr: 1, fontSize: 30 }} />
-                    <Typography variant="h6" fontWeight="600">Edit Profile</Typography>
+                    <Typography variant="h6" fontWeight="600">{t('profile.edit.title')}</Typography>
                 </Box>
                 <Divider sx={{ mb: 3 }} />
 
@@ -91,7 +93,7 @@ export const EditProfilePage = (): JSX.Element => {
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <TextFieldElement
                                 name="email"
-                                label="Email"
+                                label={t('profile.edit.email')}
                                 type="email"
                                 required
                                 fullWidth
@@ -101,7 +103,7 @@ export const EditProfilePage = (): JSX.Element => {
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <TextFieldElement
                                 name="phone"
-                                label="Phone Number"
+                                label={t('profile.edit.phone')}
                                 required
                                 fullWidth
                             />
@@ -110,7 +112,7 @@ export const EditProfilePage = (): JSX.Element => {
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <TextFieldElement
                                 name="firstName"
-                                label="First Name"
+                                label={t('profile.edit.first_name')}
                                 required
                                 fullWidth
                             />
@@ -118,7 +120,7 @@ export const EditProfilePage = (): JSX.Element => {
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <TextFieldElement
                                 name="lastName"
-                                label="Last Name"
+                                label={t('profile.edit.last_name')}
                                 required
                                 fullWidth
                             />
@@ -127,7 +129,7 @@ export const EditProfilePage = (): JSX.Element => {
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <TextFieldElement
                                 name="country"
-                                label="Country"
+                                label={t('profile.edit.country')}
                                 required
                                 fullWidth
                             />
@@ -149,7 +151,7 @@ export const EditProfilePage = (): JSX.Element => {
                                         fontWeight: 600
                                     }}
                                 >
-                                    Save Changes
+                                    {t('profile.edit.submit')}
                                 </Button>
                             </Box>
                         </Grid>

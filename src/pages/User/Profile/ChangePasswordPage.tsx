@@ -8,8 +8,10 @@ import { changePassword } from "../../../services/UserApiService";
 import { showApiError } from "../../../services/api";
 import LockIcon from '@mui/icons-material/Lock';
 import LockResetIcon from '@mui/icons-material/LockReset';
+import { useTranslation } from "react-i18next";
 
 export const ChangePasswordPage = (): JSX.Element => {
+    const { t } = useTranslation();
     const { enqueueSnackbar } = useSnackbar();
 
     const formContext = useForm({
@@ -28,11 +30,11 @@ export const ChangePasswordPage = (): JSX.Element => {
                 newPassword: data.newPassword,
                 confirmNewPassword: data.confirmNewPassword
             });
-            enqueueSnackbar("Password changed successfully!", { variant: "success" });
+            enqueueSnackbar(t('profile.password.success'), { variant: "success" });
             formContext.reset();
         } catch (error) {
             console.error(error);
-            showApiError(error, "Failed to change password");
+            showApiError(error, t('profile.password.fail'));
         }
     };
 
@@ -41,7 +43,7 @@ export const ChangePasswordPage = (): JSX.Element => {
             <Paper elevation={0} variant="outlined" sx={{ p: 4, borderRadius: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                     <LockIcon color="primary" sx={{ mr: 1, fontSize: 30 }} />
-                    <Typography variant="h6" fontWeight="600">Change Password</Typography>
+                    <Typography variant="h6" fontWeight="600">{t('profile.password.title')}</Typography>
                 </Box>
                 <Divider sx={{ mb: 3 }} />
 
@@ -52,7 +54,7 @@ export const ChangePasswordPage = (): JSX.Element => {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, maxWidth: 400, mx: 'auto' }}>
                         <TextFieldElement
                             name="oldPassword"
-                            label="Current Password"
+                            label={t('profile.password.current')}
                             type="password"
                             required
                             fullWidth
@@ -60,7 +62,7 @@ export const ChangePasswordPage = (): JSX.Element => {
 
                         <TextFieldElement
                             name="newPassword"
-                            label="New Password"
+                            label={t('profile.password.new')}
                             type="password"
                             required
                             fullWidth
@@ -68,7 +70,7 @@ export const ChangePasswordPage = (): JSX.Element => {
 
                         <TextFieldElement
                             name="confirmNewPassword"
-                            label="Confirm New Password"
+                            label={t('profile.password.confirm')}
                             type="password"
                             required
                             fullWidth
@@ -89,7 +91,7 @@ export const ChangePasswordPage = (): JSX.Element => {
                                     fontWeight: 600
                                 }}
                             >
-                                Change Password
+                                {t('profile.password.submit')}
                             </Button>
                         </Box>
                     </Box>

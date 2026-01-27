@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { EventData } from "../../../types/Event";
 import z from "zod";
 import { SessionFormModel } from "../../../types/SessionFormModel";
+import { useTranslation } from "react-i18next";
 
 
 type SessionFormProps = {
@@ -20,6 +21,7 @@ type SessionFormProps = {
 };
 
 export const SessionForm = ({ readonly = false, initialData, onDialogClose, onSubmit: parentSubmit, eventDetails }: SessionFormProps): JSX.Element => {
+    const { t } = useTranslation();
 
     const schema = useMemo(() => SessionFormModel(eventDetails), [eventDetails]);
 
@@ -45,55 +47,55 @@ export const SessionForm = ({ readonly = false, initialData, onDialogClose, onSu
         <>
             <Box sx={{ mb: 2 }}>
                 <Typography variant="h6">
-                    Associated event:
+                    {t('admin.session_form.associated_event')}
                 </Typography>
                 {eventDetails ? (
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        Name: {eventDetails.name} <br />
-                        Start date: {eventDetails.startTime?.format('DD/MM/YYYY HH:mm')} <br />
-                        End date: {eventDetails.endTime?.format('DD/MM/YYYY HH:mm')}
+                        {t('admin.session_form.event_name', { name: eventDetails.name })} <br />
+                        {t('admin.session_form.event_start', { date: eventDetails.startTime?.format('DD/MM/YYYY HH:mm') })} <br />
+                        {t('admin.session_form.event_end', { date: eventDetails.endTime?.format('DD/MM/YYYY HH:mm') })}
                     </Typography>
                 ) : (
                     <Typography variant="body2" color="error">
-                        Event details not available (Loading...)
+                        {t('admin.session_form.event_loading')}
                     </Typography>
                 )}
             </Box>
             <FormContainer formContext={formContext} onSuccess={onSubmit}>
                 <Typography variant="h5" sx={{ textAlign: 'left', marginBottom: "25px" }}>
                     {(() => {
-                        if (initialData && readonly) return "Session details";
-                        if (initialData) return "Edit session";
-                        return "Create session";
+                        if (initialData && readonly) return t('admin.session_form.details_title');
+                        if (initialData) return t('admin.session_form.edit_title');
+                        return t('admin.session_form.create_title');
                     })()}
                 </Typography>
 
                 <Box sx={{ display: 'flex', flexDirection: "column", gap: 3 }}>
                     <TextFieldElement
                         id="name-input"
-                        label="Name"
+                        label={t('admin.session_form.name')}
                         name="name"
                         required
                         fullWidth
-                        placeholder="Session name"
+                        placeholder={t('admin.session_form.name_placeholder')}
                         disabled={readonly}
                     />
 
                     <TextFieldElement
                         id="description-input"
-                        label="Description"
+                        label={t('admin.session_form.description')}
                         name="description"
                         multiline
                         rows={5}
                         required
                         fullWidth
-                        placeholder="Lorem ipsum"
+                        placeholder={t('admin.session_form.description_placeholder')}
                         disabled={readonly}
                     />
 
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DateTimePickerElement
-                            label="Start date"
+                            label={t('admin.session_form.start_date')}
                             name="startTime"
                             format="DD/MM/YYYY HH:mm"
                             ampm={false}
@@ -108,30 +110,30 @@ export const SessionForm = ({ readonly = false, initialData, onDialogClose, onSu
 
                     <TextFieldElement
                         id="duration-input"
-                        label="Duration (minutes)"
+                        label={t('admin.session_form.duration')}
                         name="duration"
                         required
                         fullWidth
                         type="number"
-                        placeholder="Session duration"
+                        placeholder={t('admin.session_form.duration_placeholder')}
                         disabled={readonly}
                     />
 
                     <TextFieldElement
                         id="maxParticipants-input"
-                        label="Max participants"
+                        label={t('admin.session_form.max_participants')}
                         name="maxParticipants"
                         required
                         fullWidth
                         type="number"
-                        placeholder="Max participants"
+                        placeholder={t('admin.session_form.max_participants_placeholder')}
                         disabled={readonly}
                     />
 
                     {readonly && (
                         <TextFieldElement
                             id="currentReserved-input"
-                            label="Currently reserved"
+                            label={t('admin.session_form.current_reserved')}
                             name="currentReserved"
                             required
                             fullWidth
@@ -142,7 +144,7 @@ export const SessionForm = ({ readonly = false, initialData, onDialogClose, onSu
 
                     {!readonly && (
                         <Button variant="contained" type="submit">
-                            {initialData ? "Edit" : "Add"}
+                            {initialData ? t('admin.session_form.submit_edit') : t('admin.session_form.submit_add')}
                         </Button>
                     )}
                 </Box>

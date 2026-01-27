@@ -8,8 +8,10 @@ import { RegisterSchema } from "../../types/AuthFormModel";
 import { registerUser } from "../../services/AuthApiService";
 import { showApiError } from "../../services/api";
 import type { RegisterRequest } from "../../types/Auth";
+import { useTranslation } from "react-i18next";
 
 export const RegistrationPage = (): JSX.Element => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
 
@@ -29,25 +31,25 @@ export const RegistrationPage = (): JSX.Element => {
     const onSubmit = async (data: RegisterRequest) => {
         try {
             await registerUser(data);
-            enqueueSnackbar("Registration successful! Please login.", { variant: "success" });
+            enqueueSnackbar(t('auth.register.success'), { variant: "success" });
             navigate("/login");
         } catch (error) {
             console.error(error);
-            showApiError(error, "Registration failed");
+            showApiError(error, t('auth.register.fail'));
         }
     };
 
     return (
         <Paper sx={{ display: 'flex', flexDirection: "column", width: 500, maxWidth: '100%', margin: 'auto', p: 5, mt: 5 }} elevation={4}>
             <Typography variant="h5" gutterBottom sx={{ textAlign: 'left', marginBottom: "25px" }}>
-                Register
+                {t('auth.register.title')}
             </Typography>
 
             <FormContainer formContext={formContext} onSuccess={onSubmit}>
                 <Box sx={{ display: 'flex', flexDirection: "column", gap: 3 }}>
                     <TextFieldElement
                         name="email"
-                        label="Email"
+                        label={t('auth.register.email')}
                         type="email"
                         required
                         fullWidth
@@ -56,13 +58,13 @@ export const RegistrationPage = (): JSX.Element => {
                     <Box sx={{ display: 'flex', gap: 2 }}>
                         <TextFieldElement
                             name="firstName"
-                            label="First Name"
+                            label={t('auth.register.first_name')}
                             required
                             fullWidth
                         />
                         <TextFieldElement
                             name="lastName"
-                            label="Last Name"
+                            label={t('auth.register.last_name')}
                             required
                             fullWidth
                         />
@@ -70,21 +72,21 @@ export const RegistrationPage = (): JSX.Element => {
 
                     <TextFieldElement
                         name="phone"
-                        label="Phone Number"
+                        label={t('auth.register.phone')}
                         required
                         fullWidth
                     />
 
                     <TextFieldElement
                         name="country"
-                        label="Country"
+                        label={t('auth.register.country')}
                         required
                         fullWidth
                     />
 
                     <TextFieldElement
                         name="password"
-                        label="Password"
+                        label={t('auth.register.password')}
                         type="password"
                         required
                         fullWidth
@@ -92,14 +94,14 @@ export const RegistrationPage = (): JSX.Element => {
 
                     <TextFieldElement
                         name="confirmPassword"
-                        label="Confirm Password"
+                        label={t('auth.register.confirm_password')}
                         type="password"
                         required
                         fullWidth
                     />
 
                     <Button variant="contained" type="submit" fullWidth size="large">
-                        Register
+                        {t('auth.register.submit')}
                     </Button>
                 </Box>
             </FormContainer>

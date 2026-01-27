@@ -4,14 +4,17 @@ import { AppBar, Toolbar, IconButton, Button, Box, Typography } from '@mui/mater
 import HomeIcon from '@mui/icons-material/Home';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LanguageIcon from '@mui/icons-material/Language';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useThemeStore } from '../../../store/themeStore';
 import { useAuthStore } from '../../../store/authStore';
 import { logoutUser } from '../../../services/AuthApiService';
+import { useTranslation } from 'react-i18next';
 
 type HeaderProps = {};
 
 const Header: React.FC<HeaderProps> = () => {
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const mode = useThemeStore((state) => state.mode);
     const toggleTheme = useThemeStore((state) => state.toggleTheme);
@@ -28,6 +31,11 @@ const Header: React.FC<HeaderProps> = () => {
             logout();
             navigate('/login');
         }
+    };
+
+    const toggleLanguage = () => {
+        const newLang = i18n.language === 'en' ? 'pl' : 'en';
+        i18n.changeLanguage(newLang);
     };
 
     return (
@@ -49,13 +57,22 @@ const Header: React.FC<HeaderProps> = () => {
                     noWrap
                     component="div"
                 >
-                    EventReservationApp
+                    {t('app.title')}
                 </Typography>
 
                 {/* Spacer */}
                 <Box sx={{ flexGrow: 1 }} />
 
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1 }}>
+                    <Button
+                        color="inherit"
+                        onClick={toggleLanguage}
+                        startIcon={<LanguageIcon />}
+                        sx={{ minWidth: 'auto' }}
+                    >
+                        {i18n.language === 'en' ? 'PL' : 'EN'}
+                    </Button>
+
                     <IconButton
                         color="inherit"
                         onClick={toggleTheme}
@@ -92,7 +109,7 @@ const Header: React.FC<HeaderProps> = () => {
                                 onClick={handleLogout}
                                 size="small"
                             >
-                                Logout
+                                {t('nav.logout')}
                             </Button>
                         </>
                     ) : (
@@ -102,7 +119,7 @@ const Header: React.FC<HeaderProps> = () => {
                                 component={Link}
                                 to="/login"
                             >
-                                Log in
+                                {t('nav.login')}
                             </Button>
 
                             <Button
@@ -110,7 +127,7 @@ const Header: React.FC<HeaderProps> = () => {
                                 component={Link}
                                 to="/register"
                             >
-                                Register
+                                {t('nav.register')}
                             </Button>
                         </>
                     )}

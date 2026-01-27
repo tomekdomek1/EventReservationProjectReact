@@ -6,16 +6,18 @@ import EditIcon from '@mui/icons-material/Edit';
 import LockIcon from '@mui/icons-material/Lock';
 import useSWR from 'swr';
 import { getUserProfile } from '../../../services/UserApiService';
+import { useTranslation } from 'react-i18next';
 
 const UserProfilePage: React.FC = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
     const { data: profile, isLoading } = useSWR('user-profile', getUserProfile);
     
     const menuItems = [
-        { text: 'User Info', icon: <PersonIcon />, path: '/profile' },
-        { text: 'Edit Data', icon: <EditIcon />, path: '/profile/edit' },
-        { text: 'Change Password', icon: <LockIcon />, path: '/profile/password' },
+        { text: t('profile.menu.info'), icon: <PersonIcon />, path: '/profile' },
+        { text: t('profile.menu.edit'), icon: <EditIcon />, path: '/profile/edit' },
+        { text: t('profile.menu.password'), icon: <LockIcon />, path: '/profile/password' },
     ];
 
     return (

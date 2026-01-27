@@ -9,10 +9,12 @@ import { fetcher } from '../../services/EventApiService';
 import type { EventData } from '../../types/Event';
 import type { PaginatedResponse } from '../../types/Pagination';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 interface HomePageProps { };
 
 const EventsPage: React.FC<HomePageProps> = () => {
+    const { t } = useTranslation();
     const [searchParams, setSearchParams] = useSearchParams();
 
     const page = parseInt(searchParams.get('page') || '1', 10);
@@ -107,7 +109,7 @@ const EventsPage: React.FC<HomePageProps> = () => {
     return (
         <Container>
             <Typography variant="h3" gutterBottom sx={{ pt: 4 }}>
-                Upcoming Events
+                {t('events.upcoming_title')}
             </Typography>
 
             <EventFilterBar 
@@ -119,7 +121,7 @@ const EventsPage: React.FC<HomePageProps> = () => {
             />
 
             {error && (
-                <Alert severity="error">Failed to load events. Please try again later.</Alert>
+                <Alert severity="error">{t('events.load_error')}</Alert>
             )}
 
             <Box sx={{ minHeight: '600px', display: 'flex', flexDirection: 'column' }}>

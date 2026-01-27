@@ -16,9 +16,11 @@ import { ThemeModeProvider } from './theme/ThemeModeProvider'
 import EventsSessionsTable from './pages/Admin/SessionTable/EventsSessionTable'
 import { SnackbarProvider } from 'notistack';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import NotFoundPage from './pages/NotFoundPage'
+import NotFoundPage from './pages/notFoundPage'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import './i18n';
+import ManageUsers from './pages/Admin/ManageUsers/ManageUsers';
 
 const router = createBrowserRouter([
   {
@@ -47,6 +49,7 @@ const router = createBrowserRouter([
           { path: '/admin/dashboard', element: <AdminDashboard /> },
           { path: '/admin/events', element: <EventTable /> },
           { path: 'admin/events/:id', element: <EventsSessionsTable /> },
+          { path: '/admin/users', element: <ManageUsers /> },
         ]
       },
 
