@@ -14,3 +14,5 @@ export const changePassword = async (data: any): Promise<void> => {
     await api.put('/users/change-password', data);
 };
 
+export const fetcher = (url: string) => api.get(url).then((res) => res.data);
+

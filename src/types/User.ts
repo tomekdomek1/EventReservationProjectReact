@@ -5,3 +5,8 @@ export interface UserProfile {
     phone: string;
     country: string;
 }
+
+export interface User extends UserProfile {
+    id: number;
+    roles: string[];
+}
